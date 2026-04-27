@@ -8,10 +8,16 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.decorationLayer} pointerEvents="none">
+        <View style={styles.greenBubble} />
+        <View style={styles.yellowGlow} />
+        <View style={styles.softAccent} />
+      </View>
+
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.iconCircle}>
-            <Ionicons name="person" size={72} color="#2E6CB7" />
+            <Ionicons name="person" size={72} color="#266B2E" />
           </View>
           <Text style={styles.title}>Inicio de sesión</Text>
         </View>
@@ -24,7 +30,7 @@ export default function HomeScreen() {
             keyboardType="email-address"
             autoCapitalize="none"
             placeholder="correo@ejemplo.com"
-            placeholderTextColor="#9AA5B1"
+            placeholderTextColor="#8DAF8B"
             style={styles.input}
           />
 
@@ -34,7 +40,7 @@ export default function HomeScreen() {
             onChangeText={setPassword}
             secureTextEntry
             placeholder="********"
-            placeholderTextColor="#9AA5B1"
+            placeholderTextColor="#8DAF8B"
             style={styles.input}
           />
         </View>
@@ -55,12 +61,44 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F5FAFF',
+    backgroundColor: '#FFFFFF',
+  },
+  decorationLayer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+  greenBubble: {
+    position: 'absolute',
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    backgroundColor: 'rgba(71, 170, 87, 0.16)',
+    top: -80,
+    left: -90,
+  },
+  yellowGlow: {
+    position: 'absolute',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: 'rgba(253, 214, 69, 0.18)',
+    top: 120,
+    right: -100,
+  },
+  softAccent: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(130, 194, 142, 0.12)',
+    bottom: -60,
+    right: 20,
   },
   container: {
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
+    zIndex: 1,
   },
   header: {
     alignItems: 'center',
@@ -70,61 +108,66 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#D9E9FF',
+    backgroundColor: '#E7F6E9',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
   },
   title: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#1D2F5A',
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#1F6829',
   },
   form: {
-    gap: 16,
+    gap: 18,
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 6,
+    fontWeight: '700',
+    color: '#3E5D39',
+    marginBottom: 8,
   },
   input: {
-    height: 52,
-    paddingHorizontal: 16,
+    height: 54,
+    paddingHorizontal: 18,
     borderWidth: 1,
-    borderColor: '#CBD5E1',
-    borderRadius: 14,
-    backgroundColor: '#FFFFFF',
-    color: '#111827',
+    borderColor: '#D8EBD2',
+    borderRadius: 16,
+    backgroundColor: '#F8FFF7',
+    color: '#233627',
   },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 32,
+    marginTop: 36,
     gap: 12,
   },
   button: {
     flex: 1,
-    height: 52,
-    borderRadius: 14,
+    height: 54,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   leftButton: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#2E6CB7',
+    borderColor: '#6BB55A',
   },
   rightButton: {
-    backgroundColor: '#2E6CB7',
+    backgroundColor: '#57A145',
   },
   buttonText: {
     fontSize: 16,
     fontWeight: '700',
   },
   leftButtonText: {
-    color: '#2E6CB7',
+    color: '#57A145',
   },
   rightButtonText: {
     color: '#FFFFFF',
