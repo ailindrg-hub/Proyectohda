@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -46,7 +48,10 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.actionsRow}>
-          <Pressable style={[styles.button, styles.leftButton]}>
+          <Pressable 
+            style={[styles.button, styles.leftButton]}
+            onPress={() => router.push('/register')}
+          >
             <Text style={[styles.buttonText, styles.leftButtonText]}>Crear cuenta</Text>
           </Pressable>
           <Pressable style={[styles.button, styles.rightButton]}>
