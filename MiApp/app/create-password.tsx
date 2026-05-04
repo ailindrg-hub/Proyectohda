@@ -3,10 +3,10 @@ import { SafeAreaView, StyleSheet, Text, TextInput, View, Pressable, ScrollView,
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function RegisterScreen() {
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [contacto, setContacto] = useState('');
+export default function CreatePasswordScreen() {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   return (
@@ -30,39 +30,42 @@ export default function RegisterScreen() {
             {/* Encabezado con Icono */}
             <View style={styles.header}>
               <View style={styles.iconCircle}>
-                <Ionicons name="person-add" size={72} color="#1F6829" />
+                <Ionicons name="lock-closed" size={72} color="#1F6829" />
               </View>
-              <Text style={styles.title}>Registro</Text>
+              <Text style={styles.title}>Crear Contraseña</Text>
             </View>
 
             {/* Formulario */}
             <View style={styles.form}>
-              <Text style={styles.label}>Nombre</Text>
-              <TextInput
-                value={nombre}
-                onChangeText={setNombre}
-                placeholder="Tu nombre"
-                placeholderTextColor="#8DAF8B"
-                style={styles.input}
-              />
+              <Text style={styles.label}>Contraseña</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Ingresa tu contraseña"
+                  placeholderTextColor="#8DAF8B"
+                  secureTextEntry={!showPassword}
+                  style={styles.inputWithIcon}
+                />
+                <Pressable 
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons 
+                    name={showPassword ? "eye-off" : "eye"} 
+                    size={24} 
+                    color="#57A145" 
+                  />
+                </Pressable>
+              </View>
 
-              <Text style={styles.label}>Apellido</Text>
+              <Text style={styles.label}>Confirmar Contraseña</Text>
               <TextInput
-                value={apellido}
-                onChangeText={setApellido}
-                placeholder="Tu apellido"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Confirma tu contraseña"
                 placeholderTextColor="#8DAF8B"
-                style={styles.input}
-              />
-
-              <Text style={styles.label}>Número o Correo</Text>
-              <TextInput
-                value={contacto}
-                onChangeText={setContacto}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholder="correo@ejemplo.com o número"
-                placeholderTextColor="#8DAF8B"
+                secureTextEntry
                 style={styles.input}
               />
             </View>
@@ -77,9 +80,16 @@ export default function RegisterScreen() {
               </Pressable>
               <Pressable 
                 style={[styles.button, styles.rightButton]}
-                onPress={() => router.push('/create-password')}
+                onPress={() => {
+                  if (password !== confirmPassword) {
+                    alert('Las contraseñas no coinciden');
+                    return;
+                  }
+                  console.log('Registro completado:', { password });
+                  // Aquí iría la lógica final de registro
+                }}
               >
-                <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>
+                <Text style={[styles.buttonText, styles.rightButtonText]}>Registrarse</Text>
               </Pressable>
             </View>
           </View>
@@ -164,6 +174,25 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#F8FFF7',
     color: '#233627',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#D8EBD2',
+    borderRadius: 16,
+    backgroundColor: '#F8FFF7',
+    height: 54,
+  },
+  inputWithIcon: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: 18,
+    color: '#233627',
+  },
+  eyeIcon: {
+    paddingHorizontal: 15,
+    justifyContent: 'center',
   },
   actionsRow: {
     flexDirection: 'row',

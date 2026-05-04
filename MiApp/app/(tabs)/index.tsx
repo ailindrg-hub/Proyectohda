@@ -11,15 +11,15 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.decorationLayer} pointerEvents="none">
-        <View style={styles.greenBubble} />
-        <View style={styles.yellowGlow} />
-        <View style={styles.softAccent} />
+        <Ionicons name="paw" size={300} color="rgba(71, 170, 87, 0.08)" style={styles.pawTopLeft} />
+        <Ionicons name="paw" size={240} color="rgba(253, 214, 69, 0.12)" style={styles.pawMiddleRight} />
+        <Ionicons name="paw" size={200} color="rgba(255, 235, 59, 0.1)" style={styles.pawBottomLeft} />
       </View>
 
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.iconCircle}>
-            <Ionicons name="person" size={72} color="#266B2E" />
+            <Ionicons name="person" size={72} color="#1F6829" />
           </View>
           <Text style={styles.title}>Inicio de sesión</Text>
         </View>
@@ -66,38 +66,30 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFEF5', // Fondo con toque amarillento
   },
   decorationLayer: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 0,
+    overflow: 'hidden',
   },
-  greenBubble: {
+  pawTopLeft: {
     position: 'absolute',
-    width: 280,
-    height: 280,
-    borderRadius: 140,
-    backgroundColor: 'rgba(71, 170, 87, 0.16)',
-    top: -80,
-    left: -90,
+    top: -50,
+    left: -60,
+    transform: [{ rotate: '-15deg' }],
   },
-  yellowGlow: {
+  pawMiddleRight: {
     position: 'absolute',
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: 'rgba(253, 214, 69, 0.18)',
-    top: 120,
-    right: -100,
+    top: '25%',
+    right: -80,
+    transform: [{ rotate: '20deg' }],
   },
-  softAccent: {
+  pawBottomLeft: {
     position: 'absolute',
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: 'rgba(130, 194, 142, 0.12)',
-    bottom: -60,
-    right: 20,
+    bottom: -40,
+    left: 20,
+    transform: [{ rotate: '10deg' }],
   },
   container: {
     flex: 1,
@@ -113,10 +105,12 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#E7F6E9',
+    backgroundColor: '#FFF9C4', // Amarillo suave
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
+    borderWidth: 2,
+    borderColor: '#FBC02D', // Borde amarillo
   },
   title: {
     fontSize: 28,
