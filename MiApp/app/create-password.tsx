@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function CreatePasswordScreen() {
@@ -9,6 +9,7 @@ export default function CreatePasswordScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { contacto } = useLocalSearchParams<{ contacto?: string }>();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -82,12 +83,22 @@ export default function CreatePasswordScreen() {
               <Pressable 
                 style={[styles.button, styles.rightButton]}
                 onPress={() => {
+                  if (!contacto || !String(contacto).trim()) {
+                    alert('Falta el correo o contacto. Vuelve al paso anterior.');
+                    return;
+                  }
+                  if (!password.trim()) {
+                    alert('Ingresa una contraseña');
+                    return;
+                  }
                   if (password !== confirmPassword) {
                     alert('Las contraseñas no coinciden');
                     return;
                   }
-                  console.log('Registro completado:', { password });
-                  // Aquí iría la lógica final de registro
+                  router.replace({
+                    pathname: '/user-home',
+                    params: { email: String(contacto).trim() },
+                  });
                 }}
               >
                 <Text style={[styles.buttonText, styles.rightButtonText]}>Registrarse</Text>

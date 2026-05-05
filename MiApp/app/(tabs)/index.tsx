@@ -55,7 +55,21 @@ export default function HomeScreen() {
           >
             <Text style={[styles.buttonText, styles.leftButtonText]}>Crear cuenta</Text>
           </Pressable>
-          <Pressable style={[styles.button, styles.rightButton]}>
+          <Pressable
+            style={[styles.button, styles.rightButton]}
+            onPress={() => {
+              const e = email.trim();
+              if (!e) {
+                alert('Ingresa tu correo electrónico');
+                return;
+              }
+              if (!password) {
+                alert('Ingresa tu contraseña');
+                return;
+              }
+              router.replace({ pathname: '/user-home', params: { email: e } });
+            }}
+          >
             <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>
           </Pressable>
         </View>

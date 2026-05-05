@@ -78,7 +78,14 @@ export default function RegisterScreen() {
               </Pressable>
               <Pressable 
                 style={[styles.button, styles.rightButton]}
-                onPress={() => router.push('/create-password')}
+                onPress={() => {
+                  const c = contacto.trim();
+                  if (!c) {
+                    alert('Ingresa tu correo o número de contacto');
+                    return;
+                  }
+                  router.push({ pathname: '/create-password', params: { contacto: c } });
+                }}
               >
                 <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>
               </Pressable>
