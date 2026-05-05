@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated, Dimensions, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const { height } = Dimensions.get('window');
 
@@ -57,7 +56,7 @@ export default function SplashScreen({ onAnimationFinish }: SplashScreenProps) {
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [fadeAnim, slideAnim, rotateAnim, scaleAnim, onAnimationFinish]);
 
   if (!isVisible) return null;
 
