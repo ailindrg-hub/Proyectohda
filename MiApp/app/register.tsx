@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, KeyboardAvoid
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import RefugioScreenShell from '@/components/RefugioScreenShell';
 
 export default function RegisterScreen() {
   const [nombre, setNombre] = useState('');
@@ -12,13 +13,7 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Capa de decoración (Burbujas) */}
-      <View style={styles.decorationLayer} pointerEvents="none">
-        <Ionicons name="paw" size={300} color="rgba(71, 170, 87, 0.08)" style={styles.pawTopLeft} />
-        <Ionicons name="paw" size={240} color="rgba(253, 214, 69, 0.12)" style={styles.pawMiddleRight} />
-        <Ionicons name="paw" size={200} color="rgba(255, 235, 59, 0.1)" style={styles.pawBottomLeft} />
-      </View>
-
+      <RefugioScreenShell>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -93,6 +88,7 @@ export default function RegisterScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      </RefugioScreenShell>
     </SafeAreaView>
   );
 }
@@ -107,33 +103,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 40,
   },
-  decorationLayer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 0,
-    overflow: 'hidden',
-  },
-  pawTopLeft: {
-    position: 'absolute',
-    top: -50,
-    left: -60,
-    transform: [{ rotate: '-15deg' }],
-  },
-  pawMiddleRight: {
-    position: 'absolute',
-    top: '25%',
-    right: -80,
-    transform: [{ rotate: '20deg' }],
-  },
-  pawBottomLeft: {
-    position: 'absolute',
-    bottom: -40,
-    left: 20,
-    transform: [{ rotate: '10deg' }],
-  },
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    zIndex: 1,
   },
   header: {
     alignItems: 'center',
