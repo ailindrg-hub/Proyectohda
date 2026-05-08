@@ -44,25 +44,27 @@ export default function MainLayout() {
           <Tabs.Screen
             name="donar"
             options={{
-              title: 'Donar',
-              tabBarIcon: ({ color, size }) => <Ionicons name="heart" size={size} color={color} />,
+              title: 'Eventos',
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="calendar-outline" size={size} color={color} />
+              ),
             }}
           />
           <Tabs.Screen
             name="voluntarios"
             options={{
-              title: 'Voluntarios',
+              title: 'Ventas',
               tabBarIcon: ({ color, size }) => (
-                <Ionicons name="people-outline" size={size} color={color} />
+                <Ionicons name="bag-handle-outline" size={size} color={color} />
               ),
             }}
           />
           <Tabs.Screen
             name="info"
             options={{
-              title: 'Info',
+              title: 'Citas',
               tabBarIcon: ({ color, size }) => (
-                <Ionicons name="information-circle-outline" size={size} color={color} />
+                <Ionicons name="mail-outline" size={size} color={color} />
               ),
             }}
           />

@@ -29,4 +29,34 @@ export const refugioScreenStyles = StyleSheet.create({
     lineHeight: 24,
     color: '#3E5D39',
   },
+  heroCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    borderWidth: 1,
+    borderColor: '#D8EBD2',
+    borderRadius: 18,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    marginHorizontal: REFUGIO_PAD_H,
+    marginTop: 14,
+    marginBottom: 16,
+  },
+  heroRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+  },
+  heroIconTint: {
+    color: '#FDD645',
+  },
+  heroTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#1F6829',
+  },
+  heroText: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: '#3E5D39',
+  },
 });
