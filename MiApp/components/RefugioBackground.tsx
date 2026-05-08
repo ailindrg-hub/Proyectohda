@@ -5,9 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 export default function RefugioBackground() {
   return (
     <View style={styles.layer} pointerEvents="none">
-      <Ionicons name="paw" size={300} color="rgba(71, 170, 87, 0.08)" style={styles.pawTopLeft} />
-      <Ionicons name="paw" size={240} color="rgba(253, 214, 69, 0.12)" style={styles.pawMiddleRight} />
-      <Ionicons name="paw" size={200} color="rgba(255, 235, 59, 0.1)" style={styles.pawBottomLeft} />
+      <Ionicons name="paw" size={320} color="rgba(71, 170, 87, 0.14)" style={styles.pawTopLeft} />
+      <Ionicons name="paw" size={260} color="rgba(253, 214, 69, 0.2)" style={styles.pawMiddleRight} />
+      <Ionicons name="paw" size={220} color="rgba(255, 235, 59, 0.16)" style={styles.pawBottomLeft} />
+      <Ionicons name="paw" size={180} color="rgba(71, 170, 87, 0.12)" style={styles.pawBottomRight} />
     </View>
   );
 }
@@ -35,5 +36,11 @@ const styles = StyleSheet.create({
     bottom: -40,
     left: 20,
     transform: [{ rotate: '10deg' }],
+  },
+  pawBottomRight: {
+    position: 'absolute',
+    bottom: 80,
+    right: -30,
+    transform: [{ rotate: '-20deg' }],
   },
 });

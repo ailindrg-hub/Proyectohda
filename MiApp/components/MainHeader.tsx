@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
 
@@ -37,7 +37,7 @@ export default function MainHeader() {
   const handleSignOut = () => {
     setMenuOpen(false);
     clearSession();
-    router.replace('/');
+    router.replace('/(tabs)' as Href);
   };
 
   return (

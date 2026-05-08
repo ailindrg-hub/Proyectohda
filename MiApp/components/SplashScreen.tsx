@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated, Dimensions, Image } from 'react-native';
+import RefugioBackground from '@/components/RefugioBackground';
 
 const { height } = Dimensions.get('window');
 
@@ -79,6 +80,7 @@ export default function SplashScreen({ onAnimationFinish }: SplashScreenProps) {
         }
       ]}
     >
+      <RefugioBackground />
       <View style={styles.logoContainer}>
         <Image 
           source={require('../assets/images/logo_huellitas.png')} 
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   logoContainer: {
+    zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
