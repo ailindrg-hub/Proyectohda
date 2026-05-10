@@ -65,6 +65,30 @@ export default function MainHeader() {
           />
           <View style={styles.menuAnchor}>
             <View style={styles.menuCard}>
+              <Pressable 
+                style={styles.menuItem} 
+                onPress={() => {
+                  setMenuOpen(false);
+                  router.replace('/(tabs)');
+                }}
+              >
+                <Ionicons name="home-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Inicio</Text>
+              </Pressable>
+
+              <Pressable 
+                style={styles.menuItem} 
+                onPress={() => {
+                  setMenuOpen(false);
+                  router.push('/register');
+                }}
+              >
+                <Ionicons name="person-add-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Registro</Text>
+              </Pressable>
+
+              <View style={styles.divider} />
+
               <Pressable style={styles.menuItem} onPress={handleSignOut}>
                 <Ionicons name="log-out-outline" size={22} color="#C62828" />
                 <Text style={styles.menuItemTextDanger}>Cerrar sesión</Text>
@@ -127,9 +151,20 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
   },
+  menuItemText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1F6829',
+  },
   menuItemTextDanger: {
     fontSize: 16,
     fontWeight: '600',
     color: '#C62828',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#D8EBD2',
+    marginVertical: 4,
+    marginHorizontal: 16,
   },
 });

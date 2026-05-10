@@ -68,6 +68,18 @@ export default function MainLayout() {
               ),
             }}
           />
+          <Tabs.Screen
+            name="cita-form"
+            options={{
+              href: null,
+            }}
+          />
+          <Tabs.Screen
+            name="adopcion-form"
+            options={{
+              href: null,
+            }}
+          />
         </Tabs>
       </SafeAreaView>
     </RefugioScreenShell>

@@ -1,7 +1,8 @@
 import type { ImageSourcePropType } from 'react-native';
-import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, useWindowDimensions, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 
 const CARD_GAP = 12;
@@ -25,76 +26,6 @@ const MASCOTA_IMAGES: ImageSourcePropType[] = [
 
 const PETS_RAW = [
   {
-    id: 'dog-1',
-    nombre: 'Max',
-    tipo: 'Perro',
-    edad: '2 anos',
-    nota: 'Jugueton y muy sociable.',
-  },
-  {
-    id: 'dog-2',
-    nombre: 'Rocky',
-    tipo: 'Perro',
-    edad: '3 anos',
-    nota: 'Le encantan los paseos largos.',
-  },
-  {
-    id: 'dog-3',
-    nombre: 'Toby',
-    tipo: 'Perro',
-    edad: '4 anos',
-    nota: 'Obediente y protector.',
-  },
-  {
-    id: 'dog-4',
-    nombre: 'Bruno',
-    tipo: 'Perro',
-    edad: '5 anos',
-    nota: 'Noble y leal con ninos.',
-  },
-  {
-    id: 'dog-5',
-    nombre: 'Simba',
-    tipo: 'Perro',
-    edad: '1 ano',
-    nota: 'Activo y amigable con todos.',
-  },
-  {
-    id: 'dog-6',
-    nombre: 'Lolo',
-    tipo: 'Perro',
-    edad: '2 anos',
-    nota: 'Le gusta correr y jugar.',
-  },
-  {
-    id: 'dog-7',
-    nombre: 'Polo',
-    tipo: 'Perro',
-    edad: '3 anos',
-    nota: 'Muy noble y obediente.',
-  },
-  {
-    id: 'cat-1',
-    nombre: 'Luna',
-    tipo: 'Gato',
-    edad: '1 ano',
-    nota: 'Tranquila, ideal para departamento.',
-  },
-  {
-    id: 'cat-2',
-    nombre: 'Mia',
-    tipo: 'Gato',
-    edad: '2 anos',
-    nota: 'Carinosa y companera.',
-  },
-  {
-    id: 'cat-3',
-    nombre: 'Kira',
-    tipo: 'Gato',
-    edad: '10 meses',
-    nota: 'Le encanta jugar con pelotas.',
-  },
-  {
     id: 'rabbit-1',
     nombre: 'Nube',
     tipo: 'Conejo',
@@ -106,7 +37,77 @@ const PETS_RAW = [
     nombre: 'Pelusa',
     tipo: 'Conejo',
     edad: '9 meses',
-    nota: 'Amigable y super suave.',
+    nota: 'Amigable y súper suave.',
+  },
+  {
+    id: 'cat-1',
+    nombre: 'Luna',
+    tipo: 'Gato',
+    edad: '1 año',
+    nota: 'Tranquila, ideal para departamento.',
+  },
+  {
+    id: 'cat-2',
+    nombre: 'Mia',
+    tipo: 'Gato',
+    edad: '2 años',
+    nota: 'Cariñosa y compañera.',
+  },
+  {
+    id: 'dog-1',
+    nombre: 'Max',
+    tipo: 'Perro',
+    edad: '2 años',
+    nota: 'Juguetón y muy sociable.',
+  },
+  {
+    id: 'dog-2',
+    nombre: 'Rocky',
+    tipo: 'Perro',
+    edad: '3 años',
+    nota: 'Le encantan los paseos largos.',
+  },
+  {
+    id: 'dog-3',
+    nombre: 'Toby',
+    tipo: 'Perro',
+    edad: '4 años',
+    nota: 'Obediente y protector.',
+  },
+  {
+    id: 'dog-4',
+    nombre: 'Bruno',
+    tipo: 'Perro',
+    edad: '5 años',
+    nota: 'Noble y leal con niños.',
+  },
+  {
+    id: 'dog-5',
+    nombre: 'Simba',
+    tipo: 'Perro',
+    edad: '1 año',
+    nota: 'Activo y amigable con todos.',
+  },
+  {
+    id: 'dog-6',
+    nombre: 'Lolo',
+    tipo: 'Perro',
+    edad: '2 años',
+    nota: 'Le gusta correr y jugar.',
+  },
+  {
+    id: 'dog-7',
+    nombre: 'Polo',
+    tipo: 'Perro',
+    edad: '3 años',
+    nota: 'Muy noble y obediente.',
+  },
+  {
+    id: 'dog-8',
+    nombre: 'Kira',
+    tipo: 'Perro',
+    edad: '2 años',
+    nota: 'Le encanta jugar con pelotas.',
   },
 ];
 
@@ -117,6 +118,7 @@ const PETS = PETS_RAW.map((pet, index) => ({
 
 export default function MascotasScreen() {
   const { width } = useWindowDimensions();
+  const router = useRouter();
   const contentWidth = width - 24 * 2;
   const cardWidth = (contentWidth - CARD_GAP) / CARD_COLS;
 
@@ -132,7 +134,7 @@ export default function MascotasScreen() {
           <Text style={refugioScreenStyles.heroTitle}>Mascotas</Text>
         </View>
         <Text style={refugioScreenStyles.heroText}>
-          Explora perritos y gatitos en adopcion, con informacion clara y fotos destacadas.
+          Explora perritos, gatitos y conejitos en adopción, con información clara y fotos destacadas.
         </Text>
       </View>
 
@@ -146,6 +148,16 @@ export default function MascotasScreen() {
                 {pet.tipo} - {pet.edad}
               </Text>
               <Text style={styles.petNote}>{pet.nota}</Text>
+              
+              <Pressable 
+                style={styles.adoptButton}
+                onPress={() => router.push({
+                  pathname: '/(main)/adopcion-form',
+                  params: { nombreMascota: pet.nombre }
+                })}
+              >
+                <Text style={styles.adoptButtonText}>AGENDAR ADOPCIÓN</Text>
+              </Pressable>
             </View>
           </View>
         ))}
@@ -192,5 +204,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
     color: '#3E5D39',
+    marginBottom: 10,
+  },
+  adoptButton: {
+    backgroundColor: '#1F6829',
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 'auto',
+  },
+  adoptButtonText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: '800',
   },
 });

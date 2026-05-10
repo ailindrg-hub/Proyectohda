@@ -72,6 +72,16 @@ export default function HomeScreen() {
             <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>
           </Pressable>
         </View>
+
+        <Pressable 
+          style={styles.guestButton}
+          onPress={() => {
+            saveSessionEmail('Invitado');
+            router.replace('/(main)' as Href);
+          }}
+        >
+          <Text style={styles.guestText}>Continuar como invitado</Text>
+        </Pressable>
       </View>
       </RefugioScreenShell>
     </SafeAreaView>
@@ -161,5 +171,16 @@ const styles = StyleSheet.create({
   },
   rightButtonText: {
     color: '#FFFFFF',
+  },
+  guestButton: {
+    marginTop: 24,
+    alignItems: 'center',
+    padding: 10,
+  },
+  guestText: {
+    color: '#8DAF8B',
+    fontSize: 14,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });

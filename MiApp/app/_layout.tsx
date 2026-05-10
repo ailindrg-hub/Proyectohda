@@ -18,7 +18,7 @@ export default function RootLayout() {
   const onSplashFinish = useCallback(() => setShowSplash(false), []);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <SessionProvider>
         {showSplash && <SplashScreen onAnimationFinish={onSplashFinish} />}
         <Stack>
