@@ -4,24 +4,18 @@ import {
   View,
   FlatList,
   useWindowDimensions,
+  Text,
   type ListRenderItemInfo,
   type NativeSyntheticEvent,
   type NativeScrollEvent,
 } from 'react-native';
 import { Image } from 'expo-image';
-
-/** Sustituye estas URLs por require(...) a tus banners en assets/images/ads/ */
-const AD_IMAGE_SOURCES = [
-  require('@/assets/images/logo_huellitas.png'),
-  { uri: 'https://picsum.photos/id/237/600/400' },
-  { uri: 'https://picsum.photos/id/1025/600/400' },
-  { uri: 'https://picsum.photos/id/1062/600/400' },
-  { uri: 'https://picsum.photos/id/1084/600/400' },
-  { uri: 'https://picsum.photos/id/219/600/400' },
-] as const;
-
-type AdImageSource = (typeof AD_IMAGE_SOURCES)[number];
-type AdSlide = readonly [AdImageSource, AdImageSource];
+/** Contenido del slider: anuncios, imágenes y la invitación */
+type ImageSource = number | { uri: string };
+type AdContent =
+  | { kind: 'image'; src: ImageSource }
+  | { kind: 'announcement'; title: string; date?: string }
+  | { kind: 'invite'; text: string };
 
 function chunkPairs<T>(arr: readonly T[]): [T, T][] {
   const out: [T, T][] = [];
@@ -31,7 +25,17 @@ function chunkPairs<T>(arr: readonly T[]): [T, T][] {
   return out;
 }
 
-const AD_SLIDES: AdSlide[] = chunkPairs(AD_IMAGE_SOURCES);
+const AD_ITEMS: AdContent[] = [
+  { kind: 'announcement', title: 'Jornada de Adopción', date: '27 Jun 2026' },
+  { kind: 'image', src: require('@/assets/images/mascotas/perro1.jfif') },
+  { kind: 'announcement', title: 'Adopciones', date: '11 Jul 2026' },
+  { kind: 'image', src: require('@/assets/images/mascotas/perro2.jfif') },
+  { kind: 'image', src: require('@/assets/images/logo_huellitas.png') },
+  { kind: 'invite', text: '¡Visítanos en nuestro refugio!' },
+];
+
+type AdSlide = readonly [AdContent, AdContent];
+const AD_SLIDES: AdSlide[] = chunkPairs(AD_ITEMS);
 const AUTO_ADVANCE_MS = 4500;
 const AD_SLIDER_MARGIN_H = 24;
 
@@ -76,11 +80,30 @@ export default function AdSlider({ sliderHeight }: Props) {
   const renderSlide = useCallback(
     ({ item }: ListRenderItemInfo<AdSlide>) => (
       <View style={[styles.adSlide, { width: slideWidth, height: sliderHeight }]}>
-        {item.map((src, idx) => (
-          <View key={idx} style={styles.adImageWrap}>
-            <Image source={src} style={styles.adImage} contentFit="cover" transition={200} />
-          </View>
-        ))}
+        {item.map((content, idx) => {
+          if (content.kind === 'image') {
+            return (
+              <View key={idx} style={styles.adImageWrap}>
+                <Image source={content.src} style={styles.adImage} contentFit="cover" transition={200} />
+              </View>
+            );
+          }
+
+          if (content.kind === 'announcement') {
+            return (
+              <View key={idx} style={[styles.adImageWrap, styles.announcementWrap]}>
+                <Text style={styles.announcementTitle}>{content.title}</Text>
+                {content.date ? <Text style={styles.announcementDate}>{content.date}</Text> : null}
+              </View>
+            );
+          }
+
+          return (
+            <View key={idx} style={[styles.adImageWrap, styles.inviteWrap]}>
+              <Text style={styles.inviteText}>{content.text}</Text>
+            </View>
+          );
+        })}
       </View>
     ),
     [slideWidth, sliderHeight]
@@ -150,6 +173,36 @@ const styles = StyleSheet.create({
   adImage: {
     width: '100%',
     height: '100%',
+  },
+  announcementWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    backgroundColor: '#FFF7E6',
+  },
+  announcementTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F6829',
+    textAlign: 'center',
+  },
+  announcementDate: {
+    marginTop: 6,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#316B2B',
+  },
+  inviteWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    backgroundColor: '#E8F5E3',
+  },
+  inviteText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#16521F',
+    textAlign: 'center',
   },
   adDots: {
     position: 'absolute',
