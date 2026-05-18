@@ -5,23 +5,36 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 
+import conejo1 from '../../assets/images/mascotas/conejo1.jfif';
+import conejo2 from '../../assets/images/mascotas/conejo2.jfif';
+import gato1 from '../../assets/images/mascotas/gato1.jfif';
+import gato2 from '../../assets/images/mascotas/gato2.webp';
+import perro1 from '../../assets/images/mascotas/perro1.jfif';
+import perro2 from '../../assets/images/mascotas/perro2.jfif';
+import perro3 from '../../assets/images/mascotas/perro3.jfif';
+import perro4 from '../../assets/images/mascotas/perro4.jfif';
+import perro5 from '../../assets/images/mascotas/perro5.jfif';
+import perro6 from '../../assets/images/mascotas/perro6.jfif';
+import perro7 from '../../assets/images/mascotas/perro7.jfif';
+import perro8 from '../../assets/images/mascotas/perro8.jfif';
+
 const CARD_GAP = 12;
 const CARD_COLS = 2;
 
 /** 12 archivos locales: una imagen por tarjeta (orden fijo alfabetico, sin relacion con el texto de la tarjeta) */
 const MASCOTA_IMAGES: ImageSourcePropType[] = [
-  require('../../assets/images/mascotas/conejo1.jfif'),
-  require('../../assets/images/mascotas/conejo2.jfif'),
-  require('../../assets/images/mascotas/gato1.jfif'),
-  require('../../assets/images/mascotas/gato2.webp'),
-  require('../../assets/images/mascotas/perro1.jfif'),
-  require('../../assets/images/mascotas/perro2.jfif'),
-  require('../../assets/images/mascotas/perro3.jfif'),
-  require('../../assets/images/mascotas/perro4.jfif'),
-  require('../../assets/images/mascotas/perro5.jfif'),
-  require('../../assets/images/mascotas/perro6.jfif'),
-  require('../../assets/images/mascotas/perro7.jfif'),
-  require('../../assets/images/mascotas/perro8.jfif'),
+  conejo1,
+  conejo2,
+  gato1,
+  gato2,
+  perro1,
+  perro2,
+  perro3,
+  perro4,
+  perro5,
+  perro6,
+  perro7,
+  perro8,
 ];
 
 const PETS_RAW = [

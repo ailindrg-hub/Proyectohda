@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar, LocaleConfig } from 'react-native-calendars/src';
 import { useRouter } from 'expo-router';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 

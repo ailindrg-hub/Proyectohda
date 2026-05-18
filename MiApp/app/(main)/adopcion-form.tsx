@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Calendar } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars/src';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
 
