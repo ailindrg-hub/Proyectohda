@@ -1,15 +1,31 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
+import { isValidEmail, looksLikeEmail, isPhoneNumber } from '@/lib/validation';
 
 export default function RegisterScreen() {
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [contacto, setContacto] = useState('');
+  const [banner, setBanner] = useState('');
+  const bannerTimerRef = useRef<number | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    return () => {
+      if (bannerTimerRef.current) clearTimeout(bannerTimerRef.current);
+    };
+  }, []);
+
+  function showBanner(msg: string) {
+    setBanner(msg);
+    if (bannerTimerRef.current) clearTimeout(bannerTimerRef.current);
+    // @ts-ignore - window.setTimeout returns number in browsers
+    bannerTimerRef.current = setTimeout(() => setBanner(''), 4000) as unknown as number;
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -22,6 +38,11 @@ export default function RegisterScreen() {
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
+          {banner ? (
+            <View style={styles.banner} pointerEvents="none">
+              <Text style={styles.bannerText}>{banner}</Text>
+            </View>
+          ) : null}
           <View style={styles.container}>
             {/* Encabezado con Icono */}
             <View style={styles.header}>
@@ -36,7 +57,10 @@ export default function RegisterScreen() {
               <Text style={styles.label}>Nombre</Text>
               <TextInput
                 value={nombre}
-                onChangeText={setNombre}
+                onChangeText={(t) => {
+                  setNombre(t);
+                  if (banner) setBanner('');
+                }}
                 placeholder="Tu nombre"
                 placeholderTextColor="#8DAF8B"
                 style={styles.input}
@@ -45,7 +69,10 @@ export default function RegisterScreen() {
               <Text style={styles.label}>Apellido</Text>
               <TextInput
                 value={apellido}
-                onChangeText={setApellido}
+                onChangeText={(t) => {
+                  setApellido(t);
+                  if (banner) setBanner('');
+                }}
                 placeholder="Tu apellido"
                 placeholderTextColor="#8DAF8B"
                 style={styles.input}
@@ -57,7 +84,7 @@ export default function RegisterScreen() {
                 onChangeText={setContacto}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                placeholder="correo@ejemplo.com o número"
+                placeholder="correo@ejemplo.com o 10 dígitos"
                 placeholderTextColor="#8DAF8B"
                 style={styles.input}
               />
@@ -74,9 +101,40 @@ export default function RegisterScreen() {
               <Pressable 
                 style={[styles.button, styles.rightButton]}
                 onPress={() => {
+                  const n = nombre.trim();
+                  const a = apellido.trim();
                   const c = contacto.trim();
+
+                  if (n.length < 3) {
+                    showBanner('Muy corto — debe ser de 3 a 25 caracteres');
+                    return;
+                  }
+                  if (n.length > 25) {
+                    showBanner('Muy largo — debe ser de 3 a 25 caracteres');
+                    return;
+                  }
+                  if (a.length < 3) {
+                    showBanner('Muy corto — debe ser de 3 a 25 caracteres');
+                    return;
+                  }
+                  if (a.length > 25) {
+                    showBanner('Muy largo — debe ser de 3 a 25 caracteres');
+                    return;
+                  }
+
                   if (!c) {
-                    alert('Ingresa tu correo o número de contacto');
+                    showBanner('Ingresa tu correo o número de contacto');
+                    return;
+                  }
+                  // Si parece un correo, validarlo
+                  if (looksLikeEmail(c) && !isValidEmail(c)) {
+                    showBanner('Ingresa un correo válido (ej: usuario@dominio.com)');
+                    return;
+                  }
+                  // Si es numérico, verificar 10 dígitos
+                  const onlyDigits = c.replace(/\D/g, '');
+                  if (!looksLikeEmail(c) && onlyDigits.length > 0 && !isPhoneNumber(c)) {
+                    showBanner('Ingresa un número válido de 10 dígitos');
                     return;
                   }
                   router.push({ pathname: '/create-password', params: { contacto: c } });
@@ -126,6 +184,21 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '800',
     color: '#1F6829',
+  },
+  banner: {
+    backgroundColor: '#FDECEA',
+    borderColor: '#F5A6A6',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginHorizontal: 24,
+    marginBottom: 14,
+  },
+  bannerText: {
+    color: '#B00020',
+    fontWeight: '700',
+    textAlign: 'center',
   },
   form: {
     gap: 18,

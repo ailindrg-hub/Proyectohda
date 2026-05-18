@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
+import { isValidEmail, looksLikeEmail, isPhoneNumber } from '@/lib/validation';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
 
 export default function CreatePasswordScreen() {
@@ -13,6 +14,11 @@ export default function CreatePasswordScreen() {
   const router = useRouter();
   const { setEmail: saveSessionEmail } = useSession();
   const { contacto } = useLocalSearchParams<{ contacto?: string }>();
+
+  const hasMinLength = password.length >= 8;
+  const hasMaxLength = password.length <= 15 && password.length > 0;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -67,6 +73,53 @@ export default function CreatePasswordScreen() {
                 secureTextEntry
                 style={styles.input}
               />
+
+              <View style={styles.passwordSpecs}>
+                <View style={styles.specRow}>
+                  <Ionicons
+                    name={hasMinLength ? 'checkmark-circle' : 'ellipse-outline'}
+                    size={18}
+                    color={hasMinLength ? '#28A745' : '#8DAF8B'}
+                    style={styles.specIcon}
+                  />
+                  <Text style={[styles.specText, hasMinLength && styles.specTextValid]}>
+                    Mínimo 8 caracteres
+                  </Text>
+                </View>
+                <View style={styles.specRow}>
+                  <Ionicons
+                    name={hasMaxLength ? 'checkmark-circle' : 'ellipse-outline'}
+                    size={18}
+                    color={hasMaxLength ? '#28A745' : '#8DAF8B'}
+                    style={styles.specIcon}
+                  />
+                  <Text style={[styles.specText, hasMaxLength && styles.specTextValid]}>
+                    Máximo 15 caracteres
+                  </Text>
+                </View>
+                <View style={styles.specRow}>
+                  <Ionicons
+                    name={hasUppercase ? 'checkmark-circle' : 'ellipse-outline'}
+                    size={18}
+                    color={hasUppercase ? '#28A745' : '#8DAF8B'}
+                    style={styles.specIcon}
+                  />
+                  <Text style={[styles.specText, hasUppercase && styles.specTextValid]}>
+                    Una mayúscula
+                  </Text>
+                </View>
+                <View style={styles.specRow}>
+                  <Ionicons
+                    name={hasNumber ? 'checkmark-circle' : 'ellipse-outline'}
+                    size={18}
+                    color={hasNumber ? '#28A745' : '#8DAF8B'}
+                    style={styles.specIcon}
+                  />
+                  <Text style={[styles.specText, hasNumber && styles.specTextValid]}>
+                    Un número
+                  </Text>
+                </View>
+              </View>
             </View>
 
             {/* Botones de Acción */}
@@ -84,8 +137,23 @@ export default function CreatePasswordScreen() {
                     alert('Falta el correo o contacto. Vuelve al paso anterior.');
                     return;
                   }
+                  const cStr = String(contacto).trim();
+                  if (looksLikeEmail(cStr) && !isValidEmail(cStr)) {
+                    alert('El correo proporcionado no es válido. Vuelve y corrígelo.');
+                    return;
+                  }
+                  // Si es número, validar 10 dígitos
+                  const onlyDigits = cStr.replace(/\D/g, '');
+                  if (!looksLikeEmail(cStr) && onlyDigits.length > 0 && !isPhoneNumber(cStr)) {
+                    alert('El número de contacto debe tener 10 dígitos.');
+                    return;
+                  }
                   if (!password.trim()) {
                     alert('Ingresa una contraseña');
+                    return;
+                  }
+                  if (!hasMinLength || !hasMaxLength || !hasUppercase || !hasNumber) {
+                    alert('La contraseña debe tener de 8 a 15 caracteres, una mayúscula y un número.');
                     return;
                   }
                   if (password !== confirmPassword) {
@@ -177,6 +245,30 @@ const styles = StyleSheet.create({
   eyeIcon: {
     paddingHorizontal: 15,
     justifyContent: 'center',
+  },
+  passwordSpecs: {
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: '#F8FFF7',
+    borderWidth: 1,
+    borderColor: '#D8EBD2',
+    gap: 10,
+  },
+  specRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  specIcon: {
+    marginRight: 10,
+  },
+  specText: {
+    color: '#8DAF8B',
+    fontSize: 14,
+  },
+  specTextValid: {
+    color: '#28A745',
+    fontWeight: '700',
   },
   actionsRow: {
     flexDirection: 'row',

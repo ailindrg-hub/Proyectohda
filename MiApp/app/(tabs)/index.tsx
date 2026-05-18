@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
+import { isValidEmail, isPhoneNumber } from '@/lib/validation';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
 
 export default function HomeScreen() {
@@ -30,7 +31,7 @@ export default function HomeScreen() {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            placeholder="correo@ejemplo.com"
+            placeholder="correo@ejemplo.com o 10 dígitos"
             placeholderTextColor="#8DAF8B"
             style={styles.input}
           />
@@ -59,6 +60,10 @@ export default function HomeScreen() {
               const e = email.trim();
               if (!e) {
                 alert('Ingresa tu correo electrónico');
+                return;
+              }
+              if (!isValidEmail(e) && !isPhoneNumber(e)) {
+                alert('Ingresa un correo válido o un número de 10 dígitos');
                 return;
               }
               if (!password) {
