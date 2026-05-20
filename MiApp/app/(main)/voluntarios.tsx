@@ -2,6 +2,16 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
+import perro1 from '@/assets/images/mascotas/perro1.jfif';
+import perro2 from '@/assets/images/mascotas/perro2.jfif';
+import perro3 from '@/assets/images/mascotas/perro3.jfif';
+import gato1 from '@/assets/images/mascotas/gato1.jfif';
+import perro4 from '@/assets/images/mascotas/perro4.jfif';
+import perro5 from '@/assets/images/mascotas/perro5.jfif';
+import perro6 from '@/assets/images/mascotas/perro6.jfif';
+import perro7 from '@/assets/images/mascotas/perro7.jfif';
+import perro8 from '@/assets/images/mascotas/perro8.jfif';
+import conejo1 from '@/assets/images/mascotas/conejo1.jfif';
 
 const PRODUCTS = [
   {
@@ -9,70 +19,70 @@ const PRODUCTS = [
     name: 'Croquetas Adulto Pro',
     description: 'Bulto de 15kg. Nutrición completa para perros adultos de raza mediana.',
     price: '$850 MXN',
-    image: require('@/assets/images/mascotas/perro1.jfif'),
+    image: perro1,
   },
   {
     id: '2',
     name: 'Shampoo Antipulgas',
     description: 'Fórmula natural de 500ml. Protege y suaviza el pelaje de tu mascota.',
     price: '$120 MXN',
-    image: require('@/assets/images/mascotas/perro2.jfif'),
+    image: perro2,
   },
   {
     id: '3',
     name: 'Correa de Entrenamiento',
     description: 'Correa reforzada de 2 metros. Ideal para paseos seguros y controlados.',
     price: '$250 MXN',
-    image: require('@/assets/images/mascotas/perro3.jfif'),
+    image: perro3,
   },
   {
     id: '4',
     name: 'Arena para Gato Premium',
     description: 'Bolsa de 5kg. Alta absorción y control de olores cítricos.',
     price: '$180 MXN',
-    image: require('@/assets/images/mascotas/gato1.jfif'),
+    image: gato1,
   },
   {
     id: '5',
     name: 'Cama Ortopédica S',
     description: 'Para mascotas pequeñas. Espuma de memoria para máximo descanso.',
     price: '$550 MXN',
-    image: require('@/assets/images/mascotas/perro4.jfif'),
+    image: perro4,
   },
   {
     id: '6',
     name: 'Plato de Acero Inox',
     description: 'Capacidad de 1L. Base antideslizante, fácil de lavar y duradero.',
     price: '$150 MXN',
-    image: require('@/assets/images/mascotas/perro5.jfif'),
+    image: perro5,
   },
   {
     id: '7',
     name: 'Juguete Mordedor KONG',
     description: 'Caucho ultra resistente. Ayuda a la salud dental y reduce ansiedad.',
     price: '$320 MXN',
-    image: require('@/assets/images/mascotas/perro6.jfif'),
+    image: perro6,
   },
   {
     id: '8',
     name: 'Cepillo para Pelaje',
     description: 'Cerdas suaves para eliminar pelo muerto en gatos y perros.',
     price: '$95 MXN',
-    image: require('@/assets/images/mascotas/perro7.jfif'),
+    image: perro7,
   },
   {
     id: '9',
     name: 'Transportadora Mediana',
     description: 'Plástico rígido con ventilación. Cumple normas para viajes.',
     price: '$1,200 MXN',
-    image: require('@/assets/images/mascotas/perro8.jfif'),
+    image: perro8,
   },
   {
     id: '10',
     name: 'Snacks de Pollo Natural',
     description: 'Paquete de 200g. Sin conservadores, 100% proteína natural.',
     price: '$65 MXN',
-    image: require('@/assets/images/mascotas/conejo1.jfif'),
+    image: conejo1,
   }
 ];
 

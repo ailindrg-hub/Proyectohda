@@ -1,0 +1,11 @@
+node_modules
+.expo
+.expo-web-test
+.vscode
+*.zip
+*.log
+.env
+.env.*
+Proyectohda/
+MiApp/.expo/
+dist-web-test/

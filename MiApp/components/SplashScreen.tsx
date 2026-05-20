@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated, Dimensions, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RefugioBackground from '@/components/RefugioBackground';
+import logoImage from '../assets/images/logo_huellitas.png';
 
 const { width, height } = Dimensions.get('window');
 
@@ -114,7 +115,7 @@ export default function SplashScreen({ onAnimationFinish }: SplashScreenProps) {
         ]}
       >
         <Image 
-          source={require('../assets/images/logo_huellitas.png')} 
+          source={logoImage} 
           style={styles.logo} 
           resizeMode="contain"
         />
