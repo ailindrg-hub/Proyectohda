@@ -1,16 +1,24 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { useState, useEffect } from 'react';
+import { ScrollView, StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView, Platform, Modal, FlatList, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
+import { useSession } from '@/contexts/SessionContext';
 
 export default function CitaFormScreen() {
   const { fecha } = useLocalSearchParams<{ fecha: string }>();
   const router = useRouter();
   
-  const [email, setEmail] = useState('');
+  const { email: sessionEmail } = useSession();
+  const [email, setEmail] = useState(sessionEmail || '');
+  const isGuest = !sessionEmail;
+
+  useEffect(() => {
+    setEmail(sessionEmail || '');
+  }, [sessionEmail]);
   const [hora, setHora] = useState('');
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
 
   const handleConfirm = () => {
@@ -50,26 +58,73 @@ export default function CitaFormScreen() {
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Correo electrónico</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="correo@ejemplo.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              placeholderTextColor="#8DAF8B"
-            />
+            <View style={styles.inputRow}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="correo@ejemplo.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                placeholderTextColor="#8DAF8B"
+                editable={isGuest}
+              />
+              {!isGuest && (
+                <Pressable
+                  style={styles.lockButton}
+                  onPress={() => router.push('/(main)/profile')}
+                >
+                  <Ionicons name="lock-closed" size={20} color="#57A145" />
+                </Pressable>
+              )}
+            </View>
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Seleccionar hora desde un reloj</Text>
-            <TextInput
-              style={styles.input}
-              value={hora}
-              onChangeText={setHora}
-              placeholder="Ej: 10:00 AM o 16:30"
-              placeholderTextColor="#8DAF8B"
-            />
+            <Text style={styles.label}>Seleccionar hora</Text>
+            <Pressable style={styles.input} onPress={() => setTimePickerVisible(true)}>
+              <Text style={[styles.inputText, !hora && { color: '#8DAF8B' }]}>{hora || 'Seleccionar hora'}</Text>
+            </Pressable>
+
+            <Modal
+              visible={timePickerVisible}
+              transparent
+              animationType="slide"
+              onRequestClose={() => setTimePickerVisible(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>Selecciona una hora</Text>
+                  <FlatList
+                    data={Array.from({ length: 25 }, (_, i) => 480 + i * 30)}
+                    keyExtractor={(mins) => String(mins)}
+                    renderItem={({ item }) => {
+                      const hh = Math.floor(item / 60);
+                      const mm = item % 60;
+                      const hourLabel = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+                      const isPM = hh >= 12;
+                      const displayHour = hh % 12 === 0 ? 12 : hh % 12;
+                      const display = `${String(displayHour).padStart(2, '0')}:${String(mm).padStart(2, '0')} ${isPM ? 'PM' : 'AM'}`;
+                      return (
+                        <TouchableOpacity
+                          style={styles.timeRow}
+                          onPress={() => {
+                            setHora(display);
+                            setTimePickerVisible(false);
+                          }}
+                        >
+                          <Text style={styles.timeText}>{hourLabel}</Text>
+                        </TouchableOpacity>
+                      );
+                    }}
+                  />
+
+                  <Pressable style={styles.modalClose} onPress={() => setTimePickerVisible(false)}>
+                    <Text style={styles.modalCloseText}>Cerrar</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
           </View>
         </View>
 
@@ -159,4 +214,58 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     textTransform: 'uppercase',
   }
+  ,
+  // Estilos para el modal de selección de hora
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    maxHeight: '60%',
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+    color: '#1F6829',
+  },
+  timeRow: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  timeText: {
+    fontSize: 16,
+    color: '#233627',
+  },
+  modalClose: {
+    marginTop: 10,
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#F1F1F1',
+  },
+  modalCloseText: {
+    color: '#1F6829',
+    fontWeight: '700',
+  },
+  inputText: {
+    fontSize: 16,
+    color: '#233627',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  lockButton: {
+    padding: 8,
+    marginLeft: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
