@@ -106,7 +106,7 @@ export default function AdopcionFormScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Hora de la cita</Text>
+            <Text style={styles.label}>Seleccionar hora desde un reloj</Text>
             <TextInput
               style={styles.input}
               value={hora}

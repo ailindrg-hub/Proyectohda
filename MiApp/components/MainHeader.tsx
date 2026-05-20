@@ -43,9 +43,17 @@ export default function MainHeader() {
   return (
     <>
       <View style={styles.topBar}>
-        <Text style={styles.emailText} numberOfLines={1}>
-          {displayEmail}
-        </Text>
+        <Pressable
+          onPress={() => router.push('/profile')}
+          style={styles.emailLink}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir perfil"
+        >
+          <Text style={styles.emailText} numberOfLines={1}>
+            {displayEmail}
+          </Text>
+        </Pressable>
         <Pressable
           onPress={() => setMenuOpen(true)}
           style={styles.menuButton}
@@ -73,7 +81,7 @@ export default function MainHeader() {
                 }}
               >
                 <Ionicons name="home-outline" size={22} color="#1F6829" />
-                <Text style={styles.menuItemText}>Inicio</Text>
+                <Text style={styles.menuItemText}>Iniciar sesión</Text>
               </Pressable>
 
               <Pressable 
@@ -85,6 +93,17 @@ export default function MainHeader() {
               >
                 <Ionicons name="person-add-outline" size={22} color="#1F6829" />
                 <Text style={styles.menuItemText}>Registro</Text>
+              </Pressable>
+
+              <Pressable 
+                style={styles.menuItem} 
+                onPress={() => {
+                  setMenuOpen(false);
+                  router.push('/profile');
+                }}
+              >
+                <Ionicons name="person-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Perfil</Text>
               </Pressable>
 
               <View style={styles.divider} />
@@ -117,6 +136,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: '#233627',
+  },
+  emailLink: {
+    flex: 1,
+    marginRight: 12,
   },
   menuButton: {
     padding: 4,

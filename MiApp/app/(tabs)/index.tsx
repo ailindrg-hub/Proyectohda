@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,78 +16,88 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <RefugioScreenShell>
-        <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="person" size={72} color="#1F6829" />
-          </View>
-          <Text style={styles.title}>Inicio de sesión</Text>
-        </View>
-
-        <View style={styles.form}>
-          <Text style={styles.label}>Correo electrónico</Text>
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholder="correo@ejemplo.com o 10 dígitos"
-            placeholderTextColor="#8DAF8B"
-            style={styles.input}
-          />
-
-          <Text style={styles.label}>Contraseña</Text>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            placeholder="********"
-            placeholderTextColor="#8DAF8B"
-            style={styles.input}
-          />
-        </View>
-
-        <View style={styles.actionsRow}>
-          <Pressable 
-            style={[styles.button, styles.leftButton]}
-            onPress={() => router.push('/register')}
-          >
-            <Text style={[styles.buttonText, styles.leftButtonText]}>Crear cuenta</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.rightButton]}
-            onPress={() => {
-              const e = email.trim();
-              if (!e) {
-                alert('Ingresa tu correo electrónico');
-                return;
-              }
-              if (!isValidEmail(e) && !isPhoneNumber(e)) {
-                alert('Ingresa un correo válido o un número de 10 dígitos');
-                return;
-              }
-              if (!password) {
-                alert('Ingresa tu contraseña');
-                return;
-              }
-              saveSessionEmail(e);
-              router.replace('/(main)' as Href);
-            }}
-          >
-            <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>
-          </Pressable>
-        </View>
-
-        <Pressable 
-          style={styles.guestButton}
-          onPress={() => {
-            saveSessionEmail('Invitado');
-            router.replace('/(main)' as Href);
-          }}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.flex}
         >
-          <Text style={styles.guestText}>Continuar como invitado</Text>
-        </Pressable>
-      </View>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <View style={styles.iconCircle}>
+                  <Ionicons name="person" size={72} color="#1F6829" />
+                </View>
+                <Text style={styles.title}>Inicio de sesión</Text>
+              </View>
+
+              <View style={styles.form}>
+                <Text style={styles.label}>Correo electrónico</Text>
+                <TextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholder="correo@ejemplo.com o 10 dígitos"
+                  placeholderTextColor="#8DAF8B"
+                  style={styles.input}
+                />
+
+                <Text style={styles.label}>Contraseña</Text>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  placeholder="********"
+                  placeholderTextColor="#8DAF8B"
+                  style={styles.input}
+                />
+              </View>
+
+              <View style={styles.actionsRow}>
+                <Pressable
+                  style={[styles.button, styles.leftButton]}
+                  onPress={() => router.push('/register')}
+                >
+                  <Text style={[styles.buttonText, styles.leftButtonText]}>Crear cuenta</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.rightButton]}
+                  onPress={() => {
+                    const e = email.trim();
+                    if (!e) {
+                      alert('Ingresa tu correo electrónico');
+                      return;
+                    }
+                    if (!isValidEmail(e) && !isPhoneNumber(e)) {
+                      alert('Ingresa un correo válido o un número de 10 dígitos');
+                      return;
+                    }
+                    if (!password) {
+                      alert('Ingresa tu contraseña');
+                      return;
+                    }
+                    saveSessionEmail(e);
+                    router.replace('/(main)' as Href);
+                  }}
+                >
+                  <Text style={[styles.buttonText, styles.rightButtonText]}>Iniciar sesión</Text>
+                </Pressable>
+              </View>
+
+              <Pressable
+                style={styles.guestButton}
+                onPress={() => {
+                  saveSessionEmail('Invitado');
+                  router.replace('/(main)' as Href);
+                }}
+              >
+                <Text style={styles.guestText}>Continuar como invitado</Text>
+              </Pressable>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </RefugioScreenShell>
     </SafeAreaView>
   );
@@ -97,6 +107,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFEF5',
+  },
+  flex: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: 24,
   },
   container: {
     flex: 1,
@@ -111,12 +129,12 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#FFF9C4', // Amarillo suave
+    backgroundColor: '#FFF9C4',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: '#FBC02D', // Borde amarillo
+    borderColor: '#FBC02D',
   },
   title: {
     fontSize: 28,
@@ -124,7 +142,7 @@ const styles = StyleSheet.create({
     color: '#1F6829',
   },
   form: {
-    gap: 18,
+    marginBottom: 18,
   },
   label: {
     fontSize: 16,
@@ -140,12 +158,18 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#F8FFF7',
     color: '#233627',
+    marginBottom: 18,
   },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 36,
-    gap: 12,
+  },
+  leftButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#6BB55A',
+    marginRight: 12,
   },
   button: {
     flex: 1,
@@ -158,11 +182,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 2,
-  },
-  leftButton: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#6BB55A',
   },
   rightButton: {
     backgroundColor: '#57A145',
