@@ -78,13 +78,13 @@ export default function RegisterScreen() {
                 style={styles.input}
               />
 
-              <Text style={styles.label}>Número o Correo</Text>
+              <Text style={styles.label}>Correo electrónico</Text>
               <TextInput
                 value={contacto}
                 onChangeText={setContacto}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                placeholder="correo@ejemplo.com o 10 dígitos"
+                placeholder="correo@ejemplo.com"
                 placeholderTextColor="#8DAF8B"
                 style={styles.input}
               />
@@ -123,21 +123,27 @@ export default function RegisterScreen() {
                   }
 
                   if (!c) {
-                    showBanner('Ingresa tu correo o número de contacto');
+                    showBanner('Ingresa tu correo electrónico');
                     return;
                   }
-                  // Si parece un correo, validarlo
-                  if (looksLikeEmail(c) && !isValidEmail(c)) {
+                  if (!looksLikeEmail(c)) {
+                    if (isPhoneNumber(c)) {
+                      showBanner(
+                        'Para registrarte necesitas un correo electrónico. El teléfono lo puedes agregar en tu perfil.'
+                      );
+                    } else {
+                      showBanner('Ingresa un correo válido (ej: usuario@dominio.com)');
+                    }
+                    return;
+                  }
+                  if (!isValidEmail(c)) {
                     showBanner('Ingresa un correo válido (ej: usuario@dominio.com)');
                     return;
                   }
-                  // Si es numérico, verificar 10 dígitos
-                  const onlyDigits = c.replace(/\D/g, '');
-                  if (!looksLikeEmail(c) && onlyDigits.length > 0 && !isPhoneNumber(c)) {
-                    showBanner('Ingresa un número válido de 10 dígitos');
-                    return;
-                  }
-                  router.push({ pathname: '/create-password', params: { contacto: c } });
+                  router.push({
+                    pathname: '/create-password',
+                    params: { contacto: c, nombre: n, apellido: a },
+                  });
                 }}
               >
                 <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>

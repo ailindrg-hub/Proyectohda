@@ -1,24 +1,103 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Pressable,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useSession } from '@/contexts/SessionContext';
-import { isValidEmail, looksLikeEmail, isPhoneNumber } from '@/lib/validation';
+import { isValidEmail } from '@/lib/validation';
+import { getSupabase, SUPABASE_SETUP_MESSAGE } from '@/lib/supabase';
+import { formatAuthError } from '@/lib/auth-errors';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
 
 export default function CreatePasswordScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { setEmail: saveSessionEmail } = useSession();
-  const { contacto } = useLocalSearchParams<{ contacto?: string }>();
+  const { contacto, nombre, apellido } = useLocalSearchParams<{
+    contacto?: string;
+    nombre?: string;
+    apellido?: string;
+  }>();
 
   const hasMinLength = password.length >= 8;
   const hasMaxLength = password.length <= 15 && password.length > 0;
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
+
+  async function handleSignUp() {
+    if (!contacto || !String(contacto).trim()) {
+      alert('Falta el correo. Vuelve al paso anterior.');
+      return;
+    }
+    const email = String(contacto).trim();
+    if (!isValidEmail(email)) {
+      alert('El correo proporcionado no es válido. Vuelve y corrígelo.');
+      return;
+    }
+    if (!password.trim()) {
+      alert('Ingresa una contraseña');
+      return;
+    }
+    if (!hasMinLength || !hasMaxLength || !hasUppercase || !hasNumber) {
+      alert('La contraseña debe tener de 8 a 15 caracteres, una mayúscula y un número.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+
+    setLoading(true);
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (err) {
+      setLoading(false);
+      const msg = err instanceof Error ? err.message : SUPABASE_SETUP_MESSAGE;
+      alert(msg);
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          nombre: String(nombre ?? '').trim(),
+          apellido: String(apellido ?? '').trim(),
+          phone: '',
+        },
+      },
+    });
+    setLoading(false);
+
+    if (error) {
+      alert(formatAuthError(error.message));
+      return;
+    }
+
+    if (!data.session) {
+      alert(
+        'Cuenta creada. Revisa tu correo para confirmarla (si Supabase lo exige) y luego inicia sesión.\n\n' +
+          'Si no llega el correo, en Supabase desactiva "Confirm email" en Authentication → Email.'
+      );
+      router.replace('/(tabs)' as Href);
+      return;
+    }
+
+    router.replace('/(main)' as Href);
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -32,7 +111,6 @@ export default function CreatePasswordScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.container}>
-            {/* Encabezado con Icono */}
             <View style={styles.header}>
               <View style={styles.iconCircle}>
                 <Ionicons name="lock-closed" size={72} color="#1F6829" />
@@ -40,7 +118,6 @@ export default function CreatePasswordScreen() {
               <Text style={styles.title}>Crear Contraseña</Text>
             </View>
 
-            {/* Formulario */}
             <View style={styles.form}>
               <Text style={styles.label}>Contraseña</Text>
               <View style={styles.inputContainer}>
@@ -51,10 +128,12 @@ export default function CreatePasswordScreen() {
                   placeholderTextColor="#8DAF8B"
                   secureTextEntry={!showPassword}
                   style={styles.inputWithIcon}
+                  editable={!loading}
                 />
                 <Pressable 
                   onPress={() => setShowPassword(!showPassword)}
                   style={styles.eyeIcon}
+                  disabled={loading}
                 >
                   <Ionicons 
                     name={showPassword ? "eye-off" : "eye"} 
@@ -72,6 +151,7 @@ export default function CreatePasswordScreen() {
                 placeholderTextColor="#8DAF8B"
                 secureTextEntry
                 style={styles.input}
+                editable={!loading}
               />
 
               <View style={styles.passwordSpecs}>
@@ -122,49 +202,24 @@ export default function CreatePasswordScreen() {
               </View>
             </View>
 
-            {/* Botones de Acción */}
             <View style={styles.actionsRow}>
               <Pressable 
                 style={[styles.button, styles.leftButton]}
                 onPress={() => router.back()}
+                disabled={loading}
               >
                 <Text style={[styles.buttonText, styles.leftButtonText]}>Volver</Text>
               </Pressable>
               <Pressable 
-                style={[styles.button, styles.rightButton]}
-                onPress={() => {
-                  if (!contacto || !String(contacto).trim()) {
-                    alert('Falta el correo o contacto. Vuelve al paso anterior.');
-                    return;
-                  }
-                  const cStr = String(contacto).trim();
-                  if (looksLikeEmail(cStr) && !isValidEmail(cStr)) {
-                    alert('El correo proporcionado no es válido. Vuelve y corrígelo.');
-                    return;
-                  }
-                  // Si es número, validar 10 dígitos
-                  const onlyDigits = cStr.replace(/\D/g, '');
-                  if (!looksLikeEmail(cStr) && onlyDigits.length > 0 && !isPhoneNumber(cStr)) {
-                    alert('El número de contacto debe tener 10 dígitos.');
-                    return;
-                  }
-                  if (!password.trim()) {
-                    alert('Ingresa una contraseña');
-                    return;
-                  }
-                  if (!hasMinLength || !hasMaxLength || !hasUppercase || !hasNumber) {
-                    alert('La contraseña debe tener de 8 a 15 caracteres, una mayúscula y un número.');
-                    return;
-                  }
-                  if (password !== confirmPassword) {
-                    alert('Las contraseñas no coinciden');
-                    return;
-                  }
-                  saveSessionEmail(String(contacto).trim());
-                  router.replace('/(main)' as Href);
-                }}
+                style={[styles.button, styles.rightButton, loading && styles.buttonDisabled]}
+                onPress={handleSignUp}
+                disabled={loading}
               >
-                <Text style={[styles.buttonText, styles.rightButtonText]}>Registrarse</Text>
+                {loading ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <Text style={[styles.buttonText, styles.rightButtonText]}>Registrarse</Text>
+                )}
               </Pressable>
             </View>
           </View>
@@ -178,7 +233,7 @@ export default function CreatePasswordScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFEF5', // Fondo con toque amarillento
+    backgroundColor: '#FFFEF5',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -197,12 +252,12 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#FFF9C4', // Amarillo suave
+    backgroundColor: '#FFF9C4',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: '#FBC02D', // Borde amarillo
+    borderColor: '#FBC02D',
   },
   title: {
     fontSize: 28,
@@ -295,6 +350,9 @@ const styles = StyleSheet.create({
   },
   rightButton: {
     backgroundColor: '#57A145',
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
   buttonText: {
     fontSize: 16,

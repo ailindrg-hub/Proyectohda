@@ -1,17 +1,84 @@
-import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Pressable,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
-import { isValidEmail, isPhoneNumber } from '@/lib/validation';
+import { isValidEmail } from '@/lib/validation';
+import { getSupabase, SUPABASE_SETUP_MESSAGE } from '@/lib/supabase';
+import { formatAuthError } from '@/lib/auth-errors';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
 
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [banner, setBanner] = useState('');
+  const [loading, setLoading] = useState(false);
+  const bannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
   const { setEmail: saveSessionEmail } = useSession();
+
+  useEffect(() => {
+    return () => {
+      if (bannerTimerRef.current) clearTimeout(bannerTimerRef.current);
+    };
+  }, []);
+
+  function showBanner(msg: string) {
+    setBanner(msg);
+    if (bannerTimerRef.current) clearTimeout(bannerTimerRef.current);
+    bannerTimerRef.current = setTimeout(() => setBanner(''), 4000);
+  }
+
+  async function handleSignIn() {
+    const e = email.trim();
+    if (!e) {
+      showBanner('Ingresa tu correo electrónico');
+      return;
+    }
+    if (!isValidEmail(e)) {
+      showBanner('Ingresa un correo válido (ej: usuario@dominio.com)');
+      return;
+    }
+    if (!password) {
+      showBanner('Ingresa tu contraseña');
+      return;
+    }
+
+    setLoading(true);
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (err) {
+      setLoading(false);
+      const msg = err instanceof Error ? err.message : SUPABASE_SETUP_MESSAGE;
+      showBanner(msg);
+      return;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: e,
+      password,
+    });
+    setLoading(false);
+
+    if (error) {
+      showBanner(formatAuthError(error.message));
+      return;
+    }
+
+    router.replace('/(main)' as Href);
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -24,6 +91,11 @@ export default function HomeScreen() {
             contentContainerStyle={styles.scrollContainer}
             showsVerticalScrollIndicator={false}
           >
+            {banner ? (
+              <View style={styles.banner} pointerEvents="none">
+                <Text style={styles.bannerText}>{banner}</Text>
+              </View>
+            ) : null}
             <View style={styles.container}>
               <View style={styles.header}>
                 <View style={styles.iconCircle}>
@@ -36,12 +108,16 @@ export default function HomeScreen() {
                 <Text style={styles.label}>Correo electrónico</Text>
                 <TextInput
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(t) => {
+                    setEmail(t);
+                    if (banner) setBanner('');
+                  }}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  placeholder="correo@ejemplo.com o 10 dígitos"
+                  placeholder="correo@ejemplo.com"
                   placeholderTextColor="#8DAF8B"
                   style={styles.input}
+                  editable={!loading}
                 />
 
                 <Text style={styles.label}>Contraseña</Text>
@@ -52,6 +128,7 @@ export default function HomeScreen() {
                   placeholder="********"
                   placeholderTextColor="#8DAF8B"
                   style={styles.input}
+                  editable={!loading}
                 />
               </View>
 
@@ -59,30 +136,20 @@ export default function HomeScreen() {
                 <Pressable
                   style={[styles.button, styles.leftButton]}
                   onPress={() => router.push('/register')}
+                  disabled={loading}
                 >
                   <Text style={[styles.buttonText, styles.leftButtonText]}>Crear cuenta</Text>
                 </Pressable>
                 <Pressable
-                  style={[styles.button, styles.rightButton]}
-                  onPress={() => {
-                    const e = email.trim();
-                    if (!e) {
-                      alert('Ingresa tu correo electrónico');
-                      return;
-                    }
-                    if (!isValidEmail(e) && !isPhoneNumber(e)) {
-                      alert('Ingresa un correo válido o un número de 10 dígitos');
-                      return;
-                    }
-                    if (!password) {
-                      alert('Ingresa tu contraseña');
-                      return;
-                    }
-                    saveSessionEmail(e);
-                    router.replace('/(main)' as Href);
-                  }}
+                  style={[styles.button, styles.rightButton, loading && styles.buttonDisabled]}
+                  onPress={handleSignIn}
+                  disabled={loading}
                 >
-                  <Text style={[styles.buttonText, styles.rightButtonText]}>Iniciar sesión</Text>
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <Text style={[styles.buttonText, styles.rightButtonText]}>Iniciar sesión</Text>
+                  )}
                 </Pressable>
               </View>
 
@@ -92,6 +159,7 @@ export default function HomeScreen() {
                   saveSessionEmail('Invitado');
                   router.replace('/(main)' as Href);
                 }}
+                disabled={loading}
               >
                 <Text style={styles.guestText}>Continuar como invitado</Text>
               </Pressable>
@@ -141,6 +209,21 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#1F6829',
   },
+  banner: {
+    backgroundColor: '#FDECEA',
+    borderColor: '#F5A6A6',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginHorizontal: 24,
+    marginBottom: 14,
+  },
+  bannerText: {
+    color: '#B00020',
+    fontWeight: '700',
+    textAlign: 'center',
+  },
   form: {
     marginBottom: 18,
   },
@@ -185,6 +268,9 @@ const styles = StyleSheet.create({
   },
   rightButton: {
     backgroundColor: '#57A145',
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
   buttonText: {
     fontSize: 16,
