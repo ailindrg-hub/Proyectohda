@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View, Pressable, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useSession } from '@/contexts/SessionContext';
+import { getSupabase } from '@/lib/supabase';
+import { updateProfile } from '@/lib/profile';
+import { isValidEmail } from '@/lib/validation';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 
 export default function ProfileScreen() {
@@ -13,6 +16,22 @@ export default function ProfileScreen() {
   const [localEmail, setLocalEmail] = useState(email);
   const [localPhone, setLocalPhone] = useState(phone);
   const [localProfileImage, setLocalProfileImage] = useState(profileImage);
+
+  useEffect(() => {
+    setLocalName(name);
+  }, [name]);
+
+  useEffect(() => {
+    setLocalEmail(email);
+  }, [email]);
+
+  useEffect(() => {
+    setLocalPhone(phone);
+  }, [phone]);
+
+  useEffect(() => {
+    setLocalProfileImage(profileImage);
+  }, [profileImage]);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -33,20 +52,69 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const trimmedName = localName.trim();
     const trimmedEmail = localEmail.trim();
-    const trimmedPhone = localPhone.trim();
+    const phoneDigits = localPhone.replace(/\D/g, '');
 
     if (!trimmedName || !trimmedEmail) {
       alert('Ingresa tu nombre y correo antes de guardar.');
       return;
     }
 
+    if (!isValidEmail(trimmedEmail)) {
+      alert('Ingresa un correo válido (ej: usuario@dominio.com)');
+      return;
+    }
+
+    if (phoneDigits.length > 0 && phoneDigits.length !== 10) {
+      alert('El teléfono debe tener exactamente 10 dígitos.');
+      return;
+    }
+
+    const supabase = getSupabase();
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user?.id) {
+      console.warn('[profile] getUser failed', userError?.message ?? 'no user');
+      router.back();
+      return;
+    }
+
+    const currentEmail = userData.user.email ?? '';
+    if (trimmedEmail !== currentEmail) {
+      const { error: updateError } = await supabase.auth.updateUser({ email: trimmedEmail });
+      if (updateError) {
+        alert('No se pudo actualizar el correo: ' + updateError.message);
+        return;
+      }
+      alert(
+        'Se envió un correo de confirmación a ' +
+          trimmedEmail +
+          '. Tu correo seguirá siendo ' +
+          currentEmail +
+          ' hasta que confirmes.'
+      );
+    }
+
     setName(trimmedName);
-    setEmail(trimmedEmail);
-    setPhone(trimmedPhone);
+    setPhone(phoneDigits);
     setProfileImage(localProfileImage);
+
+    const nameParts = trimmedName.split(/\s+/).filter(Boolean);
+    const firstName = nameParts.length > 0 ? nameParts[0] : '';
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+    const result = await updateProfile(userData.user.id, {
+      nombre: firstName || null,
+      apellido: lastName || null,
+      phone: phoneDigits || null,
+    });
+
+    if (result.error) {
+      alert('No se pudo guardar el teléfono: ' + result.error);
+      return;
+    }
+
     router.back();
   };
 
@@ -101,11 +169,12 @@ export default function ProfileScreen() {
         <Text style={styles.label}>Teléfono</Text>
         <TextInput
           value={localPhone}
-          onChangeText={setLocalPhone}
-          placeholder="+34 600 000 000"
+          onChangeText={(text) => setLocalPhone(text.replace(/\D/g, ''))}
+          placeholder="6000000000"
           placeholderTextColor="#8DAF8B"
           keyboardType="phone-pad"
           style={styles.input}
+          maxLength={10}
         />
       </View>
 

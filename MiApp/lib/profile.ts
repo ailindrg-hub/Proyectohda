@@ -25,7 +25,8 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
 
 export async function updateProfile(
   userId: string,
-  fields: Pick<Profile, 'nombre' | 'phone' | 'avatar_url'> & { apellido?: string | null }
+  fields: Partial<Pick<Profile, 'nombre' | 'apellido' | 'phone' | 'avatar_url'>
+  >
 ): Promise<{ error: string | null }> {
   const { error } = await getSupabase()
     .from('profiles')

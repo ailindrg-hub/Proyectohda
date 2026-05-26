@@ -25,7 +25,21 @@ export function formatAuthError(message: string): string {
   if (m.includes('signup is disabled')) {
     return 'El registro está desactivado en Supabase. Actívalo en Authentication → Providers → Email.';
   }
-  if (m.includes('rate limit')) {
+  if (m.includes('duplicate key value') || m.includes('already exists')) {
+    return 'Este correo ya está registrado. Prueba iniciar sesión o restablece tu contraseña.';
+  }
+  if (m.includes('database error saving new user')) {
+    return 'Error interno de Supabase al crear el usuario. Revisa la configuración de tu proyecto en Supabase.';
+  }
+  if (m.includes('email rate limit exceeded')) {
+    return 'Se alcanzó el límite de envío de correo de Supabase. Espera unos minutos o prueba con otro correo. Si estás probando, desactiva "Confirm email" en Supabase Authentication.';
+  }
+  if (
+    m.includes('rate limit') ||
+    m.includes('too many requests') ||
+    m.includes('request rate limited') ||
+    m.includes('429')
+  ) {
     return 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
   }
 

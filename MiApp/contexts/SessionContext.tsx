@@ -1,15 +1,29 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { getSupabase } from '@/lib/supabase';
+import { fetchProfile } from '@/lib/profile';
+
+type PendingRegistration = {
+  contact: string;
+  password: string;
+  nombre: string;
+  apellido: string;
+};
 
 type SessionContextValue = {
   email: string;
   name: string;
   phone: string;
   profileImage: string;
+  pendingRegistration: PendingRegistration | null;
+  verificationCode: string;
   setEmail: (value: string) => void;
   setName: (value: string) => void;
   setPhone: (value: string) => void;
   setProfileImage: (value: string) => void;
+  setPendingRegistration: (value: PendingRegistration | null) => void;
+  setVerificationCode: (value: string) => void;
   clearSession: () => void;
+  clearRegistrationFlow: () => void;
 };
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -19,6 +33,66 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [name, setNameState] = useState('');
   const [phone, setPhoneState] = useState('');
   const [profileImage, setProfileImageState] = useState('');
+  const [pendingRegistration, setPendingRegistrationState] = useState<PendingRegistration | null>(null);
+  const [verificationCode, setVerificationCodeState] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadCurrentUser() {
+      try {
+        const supabase = getSupabase();
+        const { data, error } = await supabase.auth.getUser();
+
+        if (error || !active || !data?.user) {
+          return;
+        }
+
+        setEmailState(data.user.email ?? '');
+        const profile = await fetchProfile(data.user.id);
+        if (profile) {
+          const fullName = [profile.nombre, profile.apellido].filter(Boolean).join(' ').trim();
+          if (fullName) {
+            setNameState(fullName);
+          }
+          setPhoneState(profile.phone ?? '');
+          if (profile.avatar_url) {
+            setProfileImageState(profile.avatar_url);
+          }
+        } else {
+          const metadata = data.user.user_metadata as { nombre?: string; apellido?: string; phone?: string; profileImage?: string } | null;
+          const fullName = [metadata?.nombre, metadata?.apellido].filter(Boolean).join(' ').trim();
+          if (fullName) {
+            setNameState(fullName);
+          }
+          if (metadata?.phone) {
+            setPhoneState(metadata.phone);
+          }
+          if (metadata?.profileImage) {
+            setProfileImageState(metadata.profileImage);
+          }
+        }
+      } catch {
+        // Silent failure, user state remains empty.
+      }
+    }
+
+    loadCurrentUser();
+
+    const supabase = getSupabase();
+    const { subscription } = supabase.auth.onAuthStateChange((_event, _session) => {
+      loadCurrentUser();
+    });
+
+    return () => {
+      active = false;
+      try {
+        subscription?.unsubscribe?.();
+      } catch {
+        // ignore
+      }
+    };
+  }, []);
   const setEmail = useCallback((value: string) => {
     setEmailState(value);
   }, []);
@@ -31,16 +105,56 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const setProfileImage = useCallback((value: string) => {
     setProfileImageState(value);
   }, []);
+  const setPendingRegistration = useCallback((value: PendingRegistration | null) => {
+    setPendingRegistrationState(value);
+  }, []);
+  const setVerificationCode = useCallback((value: string) => {
+    setVerificationCodeState(value);
+  }, []);
   const clearSession = useCallback(() => {
     setEmailState('');
     setNameState('');
     setPhoneState('');
     setProfileImageState('');
   }, []);
+  const clearRegistrationFlow = useCallback(() => {
+    setPendingRegistrationState(null);
+    setVerificationCodeState('');
+  }, []);
 
   const value = useMemo(
-    () => ({ email, name, phone, profileImage, setEmail, setName, setPhone, setProfileImage, clearSession }),
-    [email, name, phone, profileImage, setEmail, setName, setPhone, setProfileImage, clearSession]
+    () => ({
+      email,
+      name,
+      phone,
+      profileImage,
+      pendingRegistration,
+      verificationCode,
+      setEmail,
+      setName,
+      setPhone,
+      setProfileImage,
+      setPendingRegistration,
+      setVerificationCode,
+      clearSession,
+      clearRegistrationFlow,
+    }),
+    [
+      email,
+      name,
+      phone,
+      profileImage,
+      pendingRegistration,
+      verificationCode,
+      setEmail,
+      setName,
+      setPhone,
+      setProfileImage,
+      setPendingRegistration,
+      setVerificationCode,
+      clearSession,
+      clearRegistrationFlow,
+    ]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

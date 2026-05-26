@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useSession } from '@/contexts/SessionContext';
 import { isValidEmail } from '@/lib/validation';
 import { getSupabase, SUPABASE_SETUP_MESSAGE } from '@/lib/supabase';
 import { formatAuthError } from '@/lib/auth-errors';
@@ -23,12 +24,14 @@ export default function CreatePasswordScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const submittingRef = useRef(false);
   const router = useRouter();
   const { contacto, nombre, apellido } = useLocalSearchParams<{
     contacto?: string;
     nombre?: string;
     apellido?: string;
   }>();
+  const { setEmail: saveSessionEmail, setName: saveSessionName, setPhone: saveSessionPhone, setPendingRegistration } = useSession();
 
   const hasMinLength = password.length >= 8;
   const hasMaxLength = password.length <= 15 && password.length > 0;
@@ -36,6 +39,10 @@ export default function CreatePasswordScreen() {
   const hasNumber = /\d/.test(password);
 
   async function handleSignUp() {
+    if (submittingRef.current) {
+      return;
+    }
+
     if (!contacto || !String(contacto).trim()) {
       alert('Falta el correo. Vuelve al paso anterior.');
       return;
@@ -58,12 +65,14 @@ export default function CreatePasswordScreen() {
       return;
     }
 
+    submittingRef.current = true;
     setLoading(true);
     let supabase;
     try {
       supabase = getSupabase();
     } catch (err) {
       setLoading(false);
+      submittingRef.current = false;
       const msg = err instanceof Error ? err.message : SUPABASE_SETUP_MESSAGE;
       alert(msg);
       return;
@@ -80,23 +89,41 @@ export default function CreatePasswordScreen() {
         },
       },
     });
+
     setLoading(false);
+    submittingRef.current = false;
 
     if (error) {
-      alert(formatAuthError(error.message));
+      console.log('[create-password] signUp error', error);
+      const rawError = error.message ?? JSON.stringify(error);
+      alert(formatAuthError(rawError));
       return;
     }
 
-    if (!data.session) {
-      alert(
-        'Cuenta creada. Revisa tu correo para confirmarla (si Supabase lo exige) y luego inicia sesión.\n\n' +
-          'Si no llega el correo, en Supabase desactiva "Confirm email" en Authentication → Email.'
-      );
-      router.replace('/(tabs)' as Href);
+    if (data?.session) {
+      const savedName = [nombre, apellido]
+        .map((value) => String(value ?? '').trim())
+        .filter(Boolean)
+        .join(' ');
+      saveSessionEmail(email);
+      saveSessionName(savedName);
+      saveSessionPhone('');
+
+      router.replace('/(main)' as Href);
       return;
     }
 
-    router.replace('/(main)' as Href);
+    setPendingRegistration({
+      contact: email,
+      password,
+      nombre: String(nombre ?? '').trim(),
+      apellido: String(apellido ?? '').trim(),
+    });
+
+    router.push({
+      pathname: '/confirm-identity',
+      params: { contacto: email },
+    } as Href);
   }
 
   return (

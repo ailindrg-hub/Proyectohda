@@ -26,7 +26,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const bannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
-  const { setEmail: saveSessionEmail } = useSession();
+  const { setEmail: saveSessionEmail, setName: saveSessionName, setPhone: saveSessionPhone } = useSession();
 
   useEffect(() => {
     return () => {
@@ -75,6 +75,24 @@ export default function HomeScreen() {
     if (error) {
       showBanner(formatAuthError(error.message));
       return;
+    }
+
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.log('[sign-in] getUser error', userError);
+    }
+
+    const user = userData?.user;
+    if (user?.email) {
+      saveSessionEmail(user.email);
+    }
+    const metadata = user?.user_metadata as { nombre?: string; apellido?: string; phone?: string } | null;
+    const fullName = [metadata?.nombre, metadata?.apellido].filter(Boolean).join(' ').trim();
+    if (fullName) {
+      saveSessionName(fullName);
+    }
+    if (metadata?.phone) {
+      saveSessionPhone(metadata.phone);
     }
 
     router.replace('/(main)' as Href);
