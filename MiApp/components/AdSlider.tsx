@@ -13,6 +13,9 @@ import { Image } from 'expo-image';
 import perro1 from '@/assets/images/mascotas/perro1.jfif';
 import perro2 from '@/assets/images/mascotas/perro2.jfif';
 import gato1 from '@/assets/images/mascotas/gato1.jfif';
+import anuncio1 from '@/assets/images/mascotas/ANUNCIO1.png';
+import anuncio2 from '@/assets/images/mascotas/ANUNCIO2.png';
+import anuncio3 from '@/assets/images/mascotas/ANUNCIO3.png';
 /** Contenido del slider: anuncios, imágenes y la invitación */
 type ImageSource = number | { uri: string };
 type AdContent =
@@ -29,12 +32,12 @@ function chunkPairs<T>(arr: readonly T[]): [T, T][] {
 }
 
 const AD_ITEMS: AdContent[] = [
-  { kind: 'announcement', title: 'Jornada de Adopción', date: '27 Jun 2026' },
+  { kind: 'image', src: anuncio1 },
   { kind: 'image', src: perro1 },
-  { kind: 'announcement', title: 'Adopciones', date: '11 Jul 2026' },
+  { kind: 'image', src: anuncio2 },
   { kind: 'image', src: perro2 },
   { kind: 'image', src: gato1 },
-  { kind: 'invite', text: '¡Visítanos en nuestro refugio!' },
+  { kind: 'image', src: anuncio3 },
 ];
 
 type AdSlide = readonly [AdContent, AdContent];
