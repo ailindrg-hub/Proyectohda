@@ -11,7 +11,7 @@ import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { email, name, phone, profileImage, setEmail, setName, setPhone, setProfileImage } = useSession();
+  const { email, name, phone, profileImage, setName, setPhone, setProfileImage } = useSession();
   const [localName, setLocalName] = useState(name);
   const [localEmail, setLocalEmail] = useState(email);
   const [localPhone, setLocalPhone] = useState(phone);

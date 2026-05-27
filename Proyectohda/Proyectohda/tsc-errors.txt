@@ -1,0 +1,147 @@
+﻿MiApp/app/(main)/_layout.tsx(5,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+MiApp/app/(main)/_layout.tsx(6,24): error TS2307: Cannot find module '@/components/MainHeader' or its corresponding type declarations.
+MiApp/app/(main)/_layout.tsx(18,13): error TS2353: Object literal may only specify known properties, and 'sceneContainerStyle' does not exist in type 'BottomTabNavigationOptions | ((props: { route: RouteProp<ParamListBase, string>; navigation: BottomTabNavigationProp<ParamListBase, string, undefined>; theme: Theme; }) => BottomTabNavigationOptions)'.
+MiApp/app/(main)/adopcion-form.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/adopcion-form.tsx(7,22): error TS2307: Cannot find module '@/components/LedAlert' or its corresponding type declarations.
+MiApp/app/(main)/cita-form.tsx(5,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/cita-form.tsx(6,22): error TS2307: Cannot find module '@/components/LedAlert' or its corresponding type declarations.
+MiApp/app/(main)/donar.tsx(3,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/index.tsx(2,22): error TS2307: Cannot find module '@/components/AdSlider' or its corresponding type declarations.
+MiApp/app/(main)/index.tsx(3,29): error TS2307: Cannot find module '@/components/RandomImageGrid' or its corresponding type declarations.
+MiApp/app/(main)/index.tsx(4,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/info.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(8,21): error TS2307: Cannot find module '../../assets/images/mascotas/conejo1.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(9,21): error TS2307: Cannot find module '../../assets/images/mascotas/conejo2.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(10,19): error TS2307: Cannot find module '../../assets/images/mascotas/gato1.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(11,19): error TS2307: Cannot find module '../../assets/images/mascotas/gato2.webp' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(12,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro1.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(13,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro2.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(14,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro3.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(15,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro4.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(16,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro5.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(17,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro6.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(18,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro7.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(19,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro8.jfif' or its corresponding type declarations.
+MiApp/app/(main)/profile.tsx(5,30): error TS2307: Cannot find module 'expo-image-picker' or its corresponding type declarations.
+MiApp/app/(main)/profile.tsx(6,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+MiApp/app/(main)/profile.tsx(7,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(main)/voluntarios.tsx(4,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(tabs)/explore.tsx(3,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+MiApp/app/(tabs)/explore.tsx(4,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/app/(tabs)/index.tsx(6,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+MiApp/app/(tabs)/index.tsx(7,45): error TS2307: Cannot find module '@/lib/validation' or its corresponding type declarations.
+MiApp/app/(tabs)/index.tsx(8,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+MiApp/app/_layout.tsx(7,26): error TS2307: Cannot find module '@/components/SplashScreen' or its corresponding type declarations.
+MiApp/app/_layout.tsx(8,33): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+MiApp/app/create-password.tsx(6,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+MiApp/app/create-password.tsx(7,61): error TS2307: Cannot find module '@/lib/validation' or its corresponding type declarations.
+MiApp/app/create-password.tsx(8,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+MiApp/app/modal.tsx(4,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+MiApp/app/register.tsx(6,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+MiApp/app/register.tsx(7,61): error TS2307: Cannot find module '@/lib/validation' or its corresponding type declarations.
+MiApp/components/MainHeader.tsx(5,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+MiApp/components/parallax-scroll-view.tsx(10,28): error TS2307: Cannot find module '@/components/themed-view' or its corresponding type declarations.
+MiApp/components/parallax-scroll-view.tsx(11,32): error TS2307: Cannot find module '@/hooks/use-color-scheme' or its corresponding type declarations.
+MiApp/components/parallax-scroll-view.tsx(12,31): error TS2307: Cannot find module '@/hooks/use-theme-color' or its corresponding type declarations.
+MiApp/components/parallax-scroll-view.tsx(30,48): error TS2345: Argument of type '() => { transform: ({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]; }' is not assignable to parameter of type '() => DefaultStyle'.
+  Type '{ transform: ({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]; }' is not assignable to type 'DefaultStyle'.
+    Type '{ transform: ({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]; }' is not assignable to type 'ImageStyle'.
+      Types of property 'transform' are incompatible.
+        Type '({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]' is not assignable to type 'string | readonly (({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; ... 4 more ...; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; }))[]'.
+          Type '({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]' is not assignable to type 'readonly (({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; }))[]'.
+            Type '{ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; }' is not assignable to type '({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; })'.
+              Type '{ translateY: number; scale?: undefined; }' is not assignable to type '({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; })'.
+                Type '{ translateY: number; scale?: undefined; }' is not assignable to type '{ matrix: AnimatableNumericValue[]; } & { perspective?: never; scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; }'.
+                  Property 'matrix' is missing in type '{ translateY: number; scale?: undefined; }' but required in type '{ matrix: AnimatableNumericValue[]; }'.
+MiApp/components/parallax-scroll-view.tsx(56,11): error TS2322: Type 'DefaultStyle' is not assignable to type 'false | "" | (false & Partial<CSSAnimationProperties> & Partial<CSSTransitionProperties>) | ("" & Partial<...> & Partial<...>) | ... 12 more ... | readonly (false | ... 13 more ... | RegisteredStyle<...>)[]'.
+  Type 'TextStyle' is not assignable to type 'false | "" | (false & Partial<CSSAnimationProperties> & Partial<CSSTransitionProperties>) | ("" & Partial<...> & Partial<...>) | ... 12 more ... | readonly (false | ... 13 more ... | RegisteredStyle<...>)[]'.
+    Type 'TextStyle' is not assignable to type '(false & Partial<CSSAnimationProperties> & Partial<CSSTransitionProperties>) | ("" & Partial<CSSAnimationProperties> & Partial<...>) | ... 12 more ... | readonly (false | ... 13 more ... | RegisteredStyle<...>)[]'.
+      Type 'TextStyle' is not assignable to type '{ backfaceVisibility?: MaybeSharedValue<"visible"> | MaybeSharedValue<"hidden">; backgroundColor?: string | OpaqueColorValue | SharedValueDisableContravariance<...> | SharedValueDisableContravariance<...> | { ...; }; ... 171 more ...; translateY?: number | ... 3 more ... | { ...; }; }'.
+        Types of property 'cursor' are incompatible.
+          Type 'string' is not assignable to type '"auto" | "pointer" | SharedValueDisableContravariance<"auto"> | SharedValueDisableContravariance<"pointer">'.
+MiApp/components/RandomImageGrid.tsx(4,31): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+MiApp/components/RefugioScreenShell.tsx(3,31): error TS2307: Cannot find module '@/components/RefugioBackground' or its corresponding type declarations.
+MiApp/components/SplashScreen.tsx(4,31): error TS2307: Cannot find module '@/components/RefugioBackground' or its corresponding type declarations.
+MiApp/components/themed-text.tsx(3,31): error TS2307: Cannot find module '@/hooks/use-theme-color' or its corresponding type declarations.
+MiApp/components/themed-view.tsx(3,31): error TS2307: Cannot find module '@/hooks/use-theme-color' or its corresponding type declarations.
+MiApp/components/ui/collapsible.tsx(4,28): error TS2307: Cannot find module '@/components/themed-text' or its corresponding type declarations.
+MiApp/components/ui/collapsible.tsx(5,28): error TS2307: Cannot find module '@/components/themed-view' or its corresponding type declarations.
+MiApp/components/ui/collapsible.tsx(6,28): error TS2307: Cannot find module '@/components/ui/icon-symbol' or its corresponding type declarations.
+MiApp/components/ui/collapsible.tsx(7,24): error TS2307: Cannot find module '@/constants/theme' or its corresponding type declarations.
+MiApp/components/ui/collapsible.tsx(8,32): error TS2307: Cannot find module '@/hooks/use-color-scheme' or its corresponding type declarations.
+MiApp/hooks/use-theme-color.ts(6,24): error TS2307: Cannot find module '@/constants/theme' or its corresponding type declarations.
+MiApp/hooks/use-theme-color.ts(7,32): error TS2307: Cannot find module '@/hooks/use-color-scheme' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/_layout.tsx(5,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/_layout.tsx(6,24): error TS2307: Cannot find module '@/components/MainHeader' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/_layout.tsx(18,13): error TS2353: Object literal may only specify known properties, and 'sceneContainerStyle' does not exist in type 'BottomTabNavigationOptions | ((props: { route: RouteProp<ParamListBase, string>; navigation: BottomTabNavigationProp<ParamListBase, string, undefined>; theme: Theme; }) => BottomTabNavigationOptions)'.
+Proyectohda/MiApp/app/(main)/adopcion-form.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/adopcion-form.tsx(7,22): error TS2307: Cannot find module '@/components/LedAlert' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/cita-form.tsx(5,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/cita-form.tsx(6,22): error TS2307: Cannot find module '@/components/LedAlert' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/donar.tsx(3,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/index.tsx(2,22): error TS2307: Cannot find module '@/components/AdSlider' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/index.tsx(3,29): error TS2307: Cannot find module '@/components/RandomImageGrid' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/index.tsx(4,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/info.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(8,21): error TS2307: Cannot find module '../../assets/images/mascotas/conejo1.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(9,21): error TS2307: Cannot find module '../../assets/images/mascotas/conejo2.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(10,19): error TS2307: Cannot find module '../../assets/images/mascotas/gato1.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(11,19): error TS2307: Cannot find module '../../assets/images/mascotas/gato2.webp' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(12,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro1.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(13,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro2.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(14,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro3.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(15,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro4.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(16,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro5.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(17,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro6.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(18,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro7.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/mascotas.tsx(19,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro8.jfif' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/profile.tsx(5,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/profile.tsx(6,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(main)/voluntarios.tsx(4,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(tabs)/explore.tsx(3,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+Proyectohda/MiApp/app/(tabs)/explore.tsx(4,37): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/app/(tabs)/index.tsx(6,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+Proyectohda/MiApp/app/(tabs)/index.tsx(7,45): error TS2307: Cannot find module '@/lib/validation' or its corresponding type declarations.
+Proyectohda/MiApp/app/(tabs)/index.tsx(8,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+Proyectohda/MiApp/app/_layout.tsx(7,26): error TS2307: Cannot find module '@/components/SplashScreen' or its corresponding type declarations.
+Proyectohda/MiApp/app/_layout.tsx(8,33): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+Proyectohda/MiApp/app/create-password.tsx(6,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+Proyectohda/MiApp/app/create-password.tsx(7,61): error TS2307: Cannot find module '@/lib/validation' or its corresponding type declarations.
+Proyectohda/MiApp/app/create-password.tsx(8,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+Proyectohda/MiApp/app/modal.tsx(4,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+Proyectohda/MiApp/app/register.tsx(6,32): error TS2307: Cannot find module '@/components/RefugioScreenShell' or its corresponding type declarations.
+Proyectohda/MiApp/app/register.tsx(7,61): error TS2307: Cannot find module '@/lib/validation' or its corresponding type declarations.
+Proyectohda/MiApp/components/MainHeader.tsx(5,28): error TS2307: Cannot find module '@/contexts/SessionContext' or its corresponding type declarations.
+Proyectohda/MiApp/components/parallax-scroll-view.tsx(10,28): error TS2307: Cannot find module '@/components/themed-view' or its corresponding type declarations.
+Proyectohda/MiApp/components/parallax-scroll-view.tsx(11,32): error TS2307: Cannot find module '@/hooks/use-color-scheme' or its corresponding type declarations.
+Proyectohda/MiApp/components/parallax-scroll-view.tsx(12,31): error TS2307: Cannot find module '@/hooks/use-theme-color' or its corresponding type declarations.
+Proyectohda/MiApp/components/parallax-scroll-view.tsx(30,48): error TS2345: Argument of type '() => { transform: ({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]; }' is not assignable to parameter of type '() => DefaultStyle'.
+  Type '{ transform: ({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]; }' is not assignable to type 'DefaultStyle'.
+    Type '{ transform: ({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]; }' is not assignable to type 'ImageStyle'.
+      Types of property 'transform' are incompatible.
+        Type '({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]' is not assignable to type 'string | readonly (({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; ... 4 more ...; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; }))[]'.
+          Type '({ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; })[]' is not assignable to type 'readonly (({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; }))[]'.
+            Type '{ translateY: number; scale?: undefined; } | { scale: number; translateY?: undefined; }' is not assignable to type '({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; })'.
+              Type '{ translateY: number; scale?: undefined; }' is not assignable to type '({ perspective: AnimatableNumericValue; } & { scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; matrix?: never; }) | ... 11 more ... | ({ ...; } & { ...; })'.
+                Type '{ translateY: number; scale?: undefined; }' is not assignable to type '{ matrix: AnimatableNumericValue[]; } & { perspective?: never; scale?: never; scaleX?: never; scaleY?: never; translateX?: never; translateY?: never; rotate?: never; rotateX?: never; rotateY?: never; rotateZ?: never; skewX?: never; skewY?: never; }'.
+                  Property 'matrix' is missing in type '{ translateY: number; scale?: undefined; }' but required in type '{ matrix: AnimatableNumericValue[]; }'.
+Proyectohda/MiApp/components/parallax-scroll-view.tsx(56,11): error TS2322: Type 'DefaultStyle' is not assignable to type 'false | "" | (false & Partial<CSSAnimationProperties> & Partial<CSSTransitionProperties>) | ("" & Partial<...> & Partial<...>) | ... 12 more ... | readonly (false | ... 13 more ... | RegisteredStyle<...>)[]'.
+  Type 'TextStyle' is not assignable to type 'false | "" | (false & Partial<CSSAnimationProperties> & Partial<CSSTransitionProperties>) | ("" & Partial<...> & Partial<...>) | ... 12 more ... | readonly (false | ... 13 more ... | RegisteredStyle<...>)[]'.
+    Type 'TextStyle' is not assignable to type '(false & Partial<CSSAnimationProperties> & Partial<CSSTransitionProperties>) | ("" & Partial<CSSAnimationProperties> & Partial<...>) | ... 12 more ... | readonly (false | ... 13 more ... | RegisteredStyle<...>)[]'.
+      Type 'TextStyle' is not assignable to type '{ backfaceVisibility?: MaybeSharedValue<"visible"> | MaybeSharedValue<"hidden">; backgroundColor?: string | OpaqueColorValue | SharedValueDisableContravariance<...> | SharedValueDisableContravariance<...> | { ...; }; ... 171 more ...; translateY?: number | ... 3 more ... | { ...; }; }'.
+        Types of property 'cursor' are incompatible.
+          Type 'string' is not assignable to type '"auto" | "pointer" | SharedValueDisableContravariance<"auto"> | SharedValueDisableContravariance<"pointer">'.
+Proyectohda/MiApp/components/RandomImageGrid.tsx(4,31): error TS2307: Cannot find module '@/constants/refugioScreenStyles' or its corresponding type declarations.
+Proyectohda/MiApp/components/RefugioScreenShell.tsx(3,31): error TS2307: Cannot find module '@/components/RefugioBackground' or its corresponding type declarations.
+Proyectohda/MiApp/components/SplashScreen.tsx(4,31): error TS2307: Cannot find module '@/components/RefugioBackground' or its corresponding type declarations.
+Proyectohda/MiApp/components/themed-text.tsx(3,31): error TS2307: Cannot find module '@/hooks/use-theme-color' or its corresponding type declarations.
+Proyectohda/MiApp/components/themed-view.tsx(3,31): error TS2307: Cannot find module '@/hooks/use-theme-color' or its corresponding type declarations.
+Proyectohda/MiApp/components/ui/collapsible.tsx(4,28): error TS2307: Cannot find module '@/components/themed-text' or its corresponding type declarations.
+Proyectohda/MiApp/components/ui/collapsible.tsx(5,28): error TS2307: Cannot find module '@/components/themed-view' or its corresponding type declarations.
+Proyectohda/MiApp/components/ui/collapsible.tsx(6,28): error TS2307: Cannot find module '@/components/ui/icon-symbol' or its corresponding type declarations.
+Proyectohda/MiApp/components/ui/collapsible.tsx(7,24): error TS2307: Cannot find module '@/constants/theme' or its corresponding type declarations.
+Proyectohda/MiApp/components/ui/collapsible.tsx(8,32): error TS2307: Cannot find module '@/hooks/use-color-scheme' or its corresponding type declarations.
+Proyectohda/MiApp/hooks/use-theme-color.ts(6,24): error TS2307: Cannot find module '@/constants/theme' or its corresponding type declarations.
+Proyectohda/MiApp/hooks/use-theme-color.ts(7,32): error TS2307: Cannot find module '@/hooks/use-color-scheme' or its corresponding type declarations.

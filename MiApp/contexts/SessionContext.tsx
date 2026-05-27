@@ -80,7 +80,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     loadCurrentUser();
 
     const supabase = getSupabase();
-    const { subscription } = supabase.auth.onAuthStateChange((_event, _session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, _session) => {
       loadCurrentUser();
     });
 

@@ -1,0 +1,16 @@
+﻿MiApp/app/(main)/_layout.tsx(18,13): error TS2353: Object literal may only specify known properties, and 'sceneContainerStyle' does not exist in type 'BottomTabNavigationOptions | ((props: { route: RouteProp<ParamListBase, string>; navigation: BottomTabNavigationProp<ParamListBase, string, undefined>; theme: Theme; }) => BottomTabNavigationOptions)'.
+MiApp/app/(main)/mascotas.tsx(8,21): error TS2307: Cannot find module '../../assets/images/mascotas/conejo1.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(9,21): error TS2307: Cannot find module '../../assets/images/mascotas/conejo2.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(10,19): error TS2307: Cannot find module '../../assets/images/mascotas/gato1.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(11,19): error TS2307: Cannot find module '../../assets/images/mascotas/gato2.webp' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(12,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro1.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(13,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro2.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(14,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro3.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(15,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro4.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(16,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro5.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(17,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro6.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(18,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro7.jfif' or its corresponding type declarations.
+MiApp/app/(main)/mascotas.tsx(19,20): error TS2307: Cannot find module '../../assets/images/mascotas/perro8.jfif' or its corresponding type declarations.
+MiApp/app/(main)/profile.tsx(5,30): error TS2307: Cannot find module 'expo-image-picker' or its corresponding type declarations.
+MiApp/node_modules/react-native-calendars/src/index.ts(24,39): error TS7016: Could not find a declaration file for module 'xdate'. 'C:/Users/HP/OneDrive/Documents/GitHub/Proyectohda/MiApp/node_modules/xdate/src/xdate.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/xdate` if it exists or add a new declaration (.d.ts) file containing `declare module 'xdate';`
