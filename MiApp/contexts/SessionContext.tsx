@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { getSupabase } from '@/lib/supabase';
+import { clearPersistedAuth } from '@/lib/logout';
 import { fetchProfile } from '@/lib/profile';
 
 type PendingRegistration = {
@@ -81,7 +82,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     loadCurrentUser();
 
     const supabase = getSupabase();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, _session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!active) return;
+
+      if (event === 'SIGNED_OUT' || !session) {
+        setEmailState('');
+        setNameState('');
+        setPhoneState('');
+        setProfileImageState('');
+        setPendingRegistrationState(null);
+        setVerificationCodeState('');
+        return;
+      }
+
       loadCurrentUser();
     });
 
@@ -123,11 +136,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setVerificationCodeState('');
   }, []);
   const signOut = useCallback(async () => {
-    const supabase = getSupabase();
     try {
-      await supabase.auth.signOut();
+      await clearPersistedAuth();
     } catch {
-      // Ignore sign-out failure; ensure local session state is cleared.
+      // Asegurar limpieza local aunque falle Supabase.
     }
     clearSession();
     clearRegistrationFlow();

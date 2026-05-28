@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
+import { Platform, StyleSheet, Text, View, Pressable, Modal, Image } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
-import { getSupabase } from '@/lib/supabase';
+import { redirectToLogin } from '@/lib/logout';
 
 function HamburgerMenuIcon() {
   return (
@@ -31,9 +31,10 @@ const hamburgerStyles = StyleSheet.create({
 
 export default function MainHeader() {
   const router = useRouter();
-  const { name, clearSession, clearRegistrationFlow } = useSession();
+  const { name, profileImage, signOut } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const displayName = (name ?? '').trim().length > 0 ? (name ?? '').trim() : 'Usuario';
+  const avatarUri = (profileImage ?? '').trim();
 
   const goHome = () => {
     setMenuOpen(false);
@@ -67,15 +68,8 @@ export default function MainHeader() {
 
   const handleSignOut = async () => {
     setMenuOpen(false);
-    try {
-      const supabase = getSupabase();
-      await supabase.auth.signOut();
-    } catch {
-      // Even if sign out fails, continue clearing local session state.
-    }
-    clearSession();
-    clearRegistrationFlow();
-    router.replace('/(tabs)' as Href);
+    await signOut();
+    redirectToLogin(router);
   };
 
   return (
@@ -88,7 +82,15 @@ export default function MainHeader() {
           accessibilityRole="button"
           accessibilityLabel="Abrir perfil"
         >
-          <Ionicons name="person-circle-outline" size={32} color="#1F6829" />
+          {avatarUri ? (
+            <Image source={{ uri: avatarUri }} style={styles.profileAvatar} />
+          ) : (
+            <Ionicons
+              name="person-circle-outline"
+              size={Platform.OS === 'android' ? 44 : 36}
+              color="#1F6829"
+            />
+          )}
           <Text style={styles.profileName} numberOfLines={1}>
             {displayName}
           </Text>
@@ -170,6 +172,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginRight: 12,
+  },
+  profileAvatar: {
+    width: Platform.OS === 'android' ? 44 : 36,
+    height: Platform.OS === 'android' ? 44 : 36,
+    borderRadius: Platform.OS === 'android' ? 22 : 18,
+    backgroundColor: '#F7F9F3',
+    borderWidth: Platform.OS === 'android' ? 3 : 2,
+    borderColor: '#1F6829',
+    ...(Platform.OS === 'android'
+      ? { elevation: 2 }
+      : {}),
   },
   profileName: {
     flex: 1,

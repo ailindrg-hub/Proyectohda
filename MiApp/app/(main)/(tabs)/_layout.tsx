@@ -1,7 +1,10 @@
 import { Tabs } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+
+import { TabBarIcon } from '@/components/TabBarIcon';
+
+const TAB_LABEL_COLOR = '#8DAF8B';
 
 export default function MainTabsLayout() {
   const insets = useSafeAreaInsets();
@@ -10,8 +13,8 @@ export default function MainTabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#1F6829',
-        tabBarInactiveTintColor: '#8DAF8B',
+        tabBarActiveTintColor: TAB_LABEL_COLOR,
+        tabBarInactiveTintColor: TAB_LABEL_COLOR,
         tabBarStyle: {
           ...styles.tabBar,
           height: 58 + insets.bottom,
@@ -25,22 +28,26 @@ export default function MainTabsLayout() {
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="home-outline" />
+          ),
         }}
       />
       <Tabs.Screen
         name="mascotas"
         options={{
           title: 'Mascotas',
-          tabBarIcon: ({ color, size }) => <Ionicons name="paw" size={size} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="paw-outline" />
+          ),
         }}
       />
       <Tabs.Screen
         name="donar"
         options={{
           title: 'Eventos',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-outline" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="calendar-outline" />
           ),
         }}
       />
@@ -48,8 +55,8 @@ export default function MainTabsLayout() {
         name="voluntarios"
         options={{
           title: 'Ventas',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bag-handle-outline" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="bag-handle-outline" />
           ),
         }}
       />
@@ -57,8 +64,8 @@ export default function MainTabsLayout() {
         name="info"
         options={{
           title: 'Citas',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="mail-outline" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} name="mail-outline" />
           ),
         }}
       />

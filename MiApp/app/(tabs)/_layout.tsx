@@ -1,6 +1,11 @@
-import { Slot } from 'expo-router';
+import { Stack } from 'expo-router';
 import React from 'react';
 
 export default function TabLayout() {
-  return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }} initialRouteName="index">
+      <Stack.Screen name="index" />
+      <Stack.Screen name="explore" />
+    </Stack>
+  );
 }
