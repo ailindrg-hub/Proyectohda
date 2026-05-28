@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View, Pressable, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import { useSession } from '@/contexts/SessionContext';
 import { getSupabase } from '@/lib/supabase';
 import { updateProfile } from '@/lib/profile';
@@ -11,7 +10,16 @@ import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { email, name, phone, profileImage, setName, setPhone, setProfileImage } = useSession();
+  const { email, name, phone, profileImage, setName, setPhone, setProfileImage, setEmail } = useSession();
+  const isGuest = !email || email === 'Invitado';
+
+  const leaveProfile = () => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/(main)/(tabs)' as Href);
+  };
   const [localName, setLocalName] = useState(name);
   const [localEmail, setLocalEmail] = useState(email);
   const [localPhone, setLocalPhone] = useState(phone);
@@ -34,21 +42,27 @@ export default function ProfileScreen() {
   }, [profileImage]);
 
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Necesitamos permiso para acceder a tus fotos.');
-      return;
-    }
+    try {
+      const ImagePicker = await import('expo-image-picker');
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Necesitamos permiso para acceder a tus fotos.');
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
 
-    if (!result.canceled) {
-      setLocalProfileImage(result.assets[0].uri);
+      if (!result.canceled && result.assets[0]?.uri) {
+        setLocalProfileImage(result.assets[0].uri);
+      }
+    } catch (err) {
+      console.warn('[profile] image picker', err);
+      alert('No se pudo abrir la galería de fotos.');
     }
   };
 
@@ -57,14 +71,20 @@ export default function ProfileScreen() {
     const trimmedEmail = localEmail.trim();
     const phoneDigits = localPhone.replace(/\D/g, '');
 
-    if (!trimmedName || !trimmedEmail) {
-      alert('Ingresa tu nombre y correo antes de guardar.');
+    if (!trimmedName) {
+      alert('Ingresa tu nombre antes de guardar.');
       return;
     }
 
-    if (!isValidEmail(trimmedEmail)) {
-      alert('Ingresa un correo válido (ej: usuario@dominio.com)');
-      return;
+    if (!isGuest) {
+      if (!trimmedEmail) {
+        alert('Ingresa tu correo antes de guardar.');
+        return;
+      }
+      if (!isValidEmail(trimmedEmail)) {
+        alert('Ingresa un correo válido (ej: usuario@dominio.com)');
+        return;
+      }
     }
 
     if (phoneDigits.length > 0 && phoneDigits.length !== 10) {
@@ -72,11 +92,25 @@ export default function ProfileScreen() {
       return;
     }
 
+    if (isGuest) {
+      setName(trimmedName);
+      setPhone(phoneDigits);
+      setProfileImage(localProfileImage);
+      if (trimmedEmail && isValidEmail(trimmedEmail)) {
+        setEmail(trimmedEmail);
+      }
+      leaveProfile();
+      return;
+    }
+
     const supabase = getSupabase();
     const { data: userData, error: userError } = await supabase.auth.getUser();
     if (userError || !userData?.user?.id) {
       console.warn('[profile] getUser failed', userError?.message ?? 'no user');
-      router.back();
+      setName(trimmedName);
+      setPhone(phoneDigits);
+      setProfileImage(localProfileImage);
+      leaveProfile();
       return;
     }
 
@@ -115,7 +149,8 @@ export default function ProfileScreen() {
       return;
     }
 
-    router.back();
+    setEmail(trimmedEmail);
+    leaveProfile();
   };
 
   return (
@@ -124,7 +159,12 @@ export default function ProfileScreen() {
       contentContainerStyle={refugioScreenStyles.content}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.screenTitle}>Perfil</Text>
+      <View style={styles.titleRow}>
+        <Pressable onPress={leaveProfile} hitSlop={12} accessibilityLabel="Volver">
+          <Ionicons name="arrow-back" size={28} color="#1F6829" />
+        </Pressable>
+        <Text style={styles.screenTitle}>Perfil</Text>
+      </View>
 
       <View style={styles.profilePictureContainer}>
         <View style={styles.profilePictureWrapper}>
@@ -186,12 +226,17 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 28,
+    marginTop: 8,
+  },
   screenTitle: {
     fontSize: 32,
     fontWeight: '800',
     color: '#1F6829',
-    marginBottom: 28,
-    marginTop: 8,
   },
   profilePictureContainer: {
     alignItems: 'center',

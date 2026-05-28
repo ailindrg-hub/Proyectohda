@@ -30,9 +30,14 @@ const hamburgerStyles = StyleSheet.create({
 
 export default function MainHeader() {
   const router = useRouter();
-  const { email, clearSession } = useSession();
+  const { name, clearSession } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
-  const displayEmail = email.trim().length > 0 ? email : 'Usuario';
+  const displayName = (name ?? '').trim().length > 0 ? (name ?? '').trim() : 'Usuario';
+
+  const openProfile = () => {
+    setMenuOpen(false);
+    router.push('/(main)/profile' as Href);
+  };
 
   const handleSignOut = () => {
     setMenuOpen(false);
@@ -44,14 +49,15 @@ export default function MainHeader() {
     <>
       <View style={styles.topBar}>
         <Pressable
-          onPress={() => router.push('/profile')}
-          style={styles.emailLink}
+          onPress={openProfile}
+          style={styles.profileLink}
           hitSlop={12}
           accessibilityRole="button"
           accessibilityLabel="Abrir perfil"
         >
-          <Text style={styles.emailText} numberOfLines={1}>
-            {displayEmail}
+          <Ionicons name="person-circle-outline" size={32} color="#1F6829" />
+          <Text style={styles.profileName} numberOfLines={1}>
+            {displayName}
           </Text>
         </Pressable>
         <Pressable
@@ -73,40 +79,10 @@ export default function MainHeader() {
           />
           <View style={styles.menuAnchor}>
             <View style={styles.menuCard}>
-              <Pressable 
-                style={styles.menuItem} 
-                onPress={() => {
-                  setMenuOpen(false);
-                  router.replace('/(tabs)');
-                }}
-              >
-                <Ionicons name="home-outline" size={22} color="#1F6829" />
-                <Text style={styles.menuItemText}>Iniciar sesión</Text>
-              </Pressable>
-
-              <Pressable 
-                style={styles.menuItem} 
-                onPress={() => {
-                  setMenuOpen(false);
-                  router.push('/register');
-                }}
-              >
-                <Ionicons name="person-add-outline" size={22} color="#1F6829" />
-                <Text style={styles.menuItemText}>Registro</Text>
-              </Pressable>
-
-              <Pressable 
-                style={styles.menuItem} 
-                onPress={() => {
-                  setMenuOpen(false);
-                  router.push('/profile');
-                }}
-              >
+              <Pressable style={styles.menuItem} onPress={openProfile}>
                 <Ionicons name="person-outline" size={22} color="#1F6829" />
                 <Text style={styles.menuItemText}>Perfil</Text>
               </Pressable>
-
-              <View style={styles.divider} />
 
               <Pressable style={styles.menuItem} onPress={handleSignOut}>
                 <Ionicons name="log-out-outline" size={22} color="#C62828" />
@@ -130,16 +106,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFEF5',
     zIndex: 2,
   },
-  emailText: {
+  profileLink: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     marginRight: 12,
+  },
+  profileName: {
+    flex: 1,
     fontSize: 15,
     fontWeight: '700',
     color: '#233627',
-  },
-  emailLink: {
-    flex: 1,
-    marginRight: 12,
   },
   menuButton: {
     padding: 4,
@@ -183,11 +161,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#C62828',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#D8EBD2',
-    marginVertical: 4,
-    marginHorizontal: 16,
   },
 });

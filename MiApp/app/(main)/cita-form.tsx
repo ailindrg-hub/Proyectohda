@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView, Platform, Modal, FlatList, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
@@ -32,7 +32,7 @@ export default function CitaFormScreen() {
   const handleCloseAlert = () => {
     setAlertVisible(false);
     // Volver a la pantalla de citas o al inicio
-    router.replace('/(main)/info');
+    router.replace('/(main)/(tabs)/info' as Href);
   };
 
   return (
@@ -72,7 +72,7 @@ export default function CitaFormScreen() {
               {!isGuest && (
                 <Pressable
                   style={styles.lockButton}
-                  onPress={() => router.push('/(main)/profile')}
+                  onPress={() => router.push('/(main)/profile' as Href)}
                 >
                   <Ionicons name="lock-closed" size={20} color="#57A145" />
                 </Pressable>

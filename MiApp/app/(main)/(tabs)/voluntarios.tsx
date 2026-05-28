@@ -1,17 +1,36 @@
+import type { ImageSourcePropType } from 'react-native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
-import perro1 from '@/assets/images/mascotas/perro1.jfif';
-import perro2 from '@/assets/images/mascotas/perro2.jfif';
-import perro3 from '@/assets/images/mascotas/perro3.jfif';
-import gato1 from '@/assets/images/mascotas/gato1.jfif';
-import perro4 from '@/assets/images/mascotas/perro4.jfif';
-import perro5 from '@/assets/images/mascotas/perro5.jfif';
-import perro6 from '@/assets/images/mascotas/perro6.jfif';
-import perro7 from '@/assets/images/mascotas/perro7.jfif';
-import perro8 from '@/assets/images/mascotas/perro8.jfif';
-import conejo1 from '@/assets/images/mascotas/conejo1.jfif';
+import croquetas from '@/assets/images/mascotas/croquetas.jfif';
+import shampoo from '@/assets/images/mascotas/shampoo.jfif';
+import correa from '@/assets/images/mascotas/correa.jfif';
+import arena from '@/assets/images/mascotas/Arena.jfif';
+import cama from '@/assets/images/mascotas/cama.jfif';
+import plato from '@/assets/images/mascotas/plato.jfif';
+import juguete from '@/assets/images/mascotas/juguete.jfif';
+import cepillo from '@/assets/images/mascotas/cepillo.jpg';
+import transportadora from '@/assets/images/mascotas/transportadora.jfif';
+import snacks from '@/assets/images/mascotas/snacks.jfif';
+
+const PRODUCT_IMAGES_BY_FIRST_WORD: Record<string, ImageSourcePropType> = {
+  croquetas,
+  shampoo,
+  correa,
+  arena,
+  cama,
+  plato,
+  juguete,
+  cepillo,
+  transportadora,
+  snacks,
+};
+
+const getProductImage = (name: string): ImageSourcePropType => {
+  const firstWord = name.trim().split(/\s+/)[0]?.toLowerCase();
+  return PRODUCT_IMAGES_BY_FIRST_WORD[firstWord] ?? croquetas;
+};
 
 const PRODUCTS = [
   {
@@ -19,70 +38,70 @@ const PRODUCTS = [
     name: 'Croquetas Adulto Pro',
     description: 'Bulto de 15kg. Nutrición completa para perros adultos de raza mediana.',
     price: '$850 MXN',
-    image: perro1,
+    image: getProductImage('Croquetas Adulto Pro'),
   },
   {
     id: '2',
     name: 'Shampoo Antipulgas',
     description: 'Fórmula natural de 500ml. Protege y suaviza el pelaje de tu mascota.',
     price: '$120 MXN',
-    image: perro2,
+    image: getProductImage('Shampoo Antipulgas'),
   },
   {
     id: '3',
     name: 'Correa de Entrenamiento',
     description: 'Correa reforzada de 2 metros. Ideal para paseos seguros y controlados.',
     price: '$250 MXN',
-    image: perro3,
+    image: getProductImage('Correa de Entrenamiento'),
   },
   {
     id: '4',
     name: 'Arena para Gato Premium',
     description: 'Bolsa de 5kg. Alta absorción y control de olores cítricos.',
     price: '$180 MXN',
-    image: gato1,
+    image: getProductImage('Arena para Gato Premium'),
   },
   {
     id: '5',
     name: 'Cama Ortopédica S',
     description: 'Para mascotas pequeñas. Espuma de memoria para máximo descanso.',
     price: '$550 MXN',
-    image: perro4,
+    image: getProductImage('Cama Ortopédica S'),
   },
   {
     id: '6',
     name: 'Plato de Acero Inox',
     description: 'Capacidad de 1L. Base antideslizante, fácil de lavar y duradero.',
     price: '$150 MXN',
-    image: perro5,
+    image: getProductImage('Plato de Acero Inox'),
   },
   {
     id: '7',
     name: 'Juguete Mordedor KONG',
     description: 'Caucho ultra resistente. Ayuda a la salud dental y reduce ansiedad.',
     price: '$320 MXN',
-    image: perro6,
+    image: getProductImage('Juguete Mordedor KONG'),
   },
   {
     id: '8',
     name: 'Cepillo para Pelaje',
     description: 'Cerdas suaves para eliminar pelo muerto en gatos y perros.',
     price: '$95 MXN',
-    image: perro7,
+    image: getProductImage('Cepillo para Pelaje'),
   },
   {
     id: '9',
     name: 'Transportadora Mediana',
     description: 'Plástico rígido con ventilación. Cumple normas para viajes.',
     price: '$1,200 MXN',
-    image: perro8,
+    image: getProductImage('Transportadora Mediana'),
   },
   {
     id: '10',
     name: 'Snacks de Pollo Natural',
     description: 'Paquete de 200g. Sin conservadores, 100% proteína natural.',
     price: '$65 MXN',
-    image: conejo1,
+    image: getProductImage('Snacks de Pollo Natural'),
   }
 ];
 

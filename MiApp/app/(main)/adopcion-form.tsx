@@ -1,21 +1,50 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  Modal,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars/src';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
+import { useSession } from '@/contexts/SessionContext';
 
 export default function AdopcionFormScreen() {
   const { nombreMascota } = useLocalSearchParams<{ nombreMascota: string }>();
   const router = useRouter();
-  
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [telefono, setTelefono] = useState('');
+
+  const { email: sessionEmail, name: sessionName, phone: sessionPhone } = useSession();
+  const isGuest = !sessionEmail;
+
+  const [nombre, setNombre] = useState(sessionName || '');
+  const [email, setEmail] = useState(sessionEmail || '');
+  const [telefono, setTelefono] = useState(sessionPhone || '');
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
+
+  useEffect(() => {
+    setNombre(sessionName || '');
+  }, [sessionName]);
+
+  useEffect(() => {
+    setEmail(sessionEmail || '');
+  }, [sessionEmail]);
+
+  useEffect(() => {
+    setTelefono(sessionPhone || '');
+  }, [sessionPhone]);
 
   const handleConfirm = () => {
     if (!nombre.trim() || !email.trim() || !telefono.trim() || !fecha || !hora.trim()) {
@@ -27,11 +56,11 @@ export default function AdopcionFormScreen() {
 
   const handleCloseAlert = () => {
     setAlertVisible(false);
-    router.replace('/(main)/mascotas');
+    router.replace('/(main)/(tabs)/mascotas' as Href);
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
@@ -53,47 +82,80 @@ export default function AdopcionFormScreen() {
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Nombre Completo</Text>
-            <TextInput
-              style={styles.input}
-              value={nombre}
-              onChangeText={setNombre}
-              placeholder="Tu nombre"
-              placeholderTextColor="#8DAF8B"
-            />
+            <View style={styles.inputRow}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                value={nombre}
+                onChangeText={setNombre}
+                placeholder="Tu nombre"
+                placeholderTextColor="#8DAF8B"
+                editable={isGuest}
+              />
+              {!isGuest && (
+                <Pressable
+                  style={styles.lockButton}
+                  onPress={() => router.push('/(main)/profile' as Href)}
+                >
+                  <Ionicons name="lock-closed" size={20} color="#57A145" />
+                </Pressable>
+              )}
+            </View>
           </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Correo electrónico</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="correo@ejemplo.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              placeholderTextColor="#8DAF8B"
-            />
+            <View style={styles.inputRow}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="correo@ejemplo.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                placeholderTextColor="#8DAF8B"
+                editable={isGuest}
+              />
+              {!isGuest && (
+                <Pressable
+                  style={styles.lockButton}
+                  onPress={() => router.push('/(main)/profile' as Href)}
+                >
+                  <Ionicons name="lock-closed" size={20} color="#57A145" />
+                </Pressable>
+              )}
+            </View>
           </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Número Telefónico</Text>
-            <TextInput
-              style={styles.input}
-              value={telefono}
-              onChangeText={setTelefono}
-              placeholder="Tu número"
-              keyboardType="phone-pad"
-              placeholderTextColor="#8DAF8B"
-            />
+            <View style={styles.inputRow}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                value={telefono}
+                onChangeText={setTelefono}
+                placeholder="Tu número"
+                keyboardType="phone-pad"
+                placeholderTextColor="#8DAF8B"
+                editable={isGuest}
+              />
+              {!isGuest && (
+                <Pressable
+                  style={styles.lockButton}
+                  onPress={() => router.push('/(main)/profile' as Href)}
+                >
+                  <Ionicons name="lock-closed" size={20} color="#57A145" />
+                </Pressable>
+              )}
+            </View>
           </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Selecciona la fecha de visita</Text>
             <View style={styles.calendarContainer}>
               <Calendar
-                onDayPress={(day: any) => setFecha(day.dateString)}
+                onDayPress={(day: { dateString: string }) => setFecha(day.dateString)}
                 markedDates={{
-                  [fecha]: { selected: true, selectedColor: '#1F6829' }
+                  [fecha]: { selected: true, selectedColor: '#1F6829' },
                 }}
                 theme={{
                   todayTextColor: '#57A145',
@@ -106,14 +168,52 @@ export default function AdopcionFormScreen() {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Seleccionar hora desde un reloj</Text>
-            <TextInput
-              style={styles.input}
-              value={hora}
-              onChangeText={setHora}
-              placeholder="Ej: 11:30 AM"
-              placeholderTextColor="#8DAF8B"
-            />
+            <Text style={styles.label}>Seleccionar hora</Text>
+            <Pressable style={styles.input} onPress={() => setTimePickerVisible(true)}>
+              <Text style={[styles.inputText, !hora && { color: '#8DAF8B' }]}>
+                {hora || 'Seleccionar hora'}
+              </Text>
+            </Pressable>
+
+            <Modal
+              visible={timePickerVisible}
+              transparent
+              animationType="slide"
+              onRequestClose={() => setTimePickerVisible(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>Selecciona una hora</Text>
+                  <FlatList
+                    data={Array.from({ length: 25 }, (_, i) => 480 + i * 30)}
+                    keyExtractor={(mins) => String(mins)}
+                    renderItem={({ item }) => {
+                      const hh = Math.floor(item / 60);
+                      const mm = item % 60;
+                      const hourLabel = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+                      const isPM = hh >= 12;
+                      const displayHour = hh % 12 === 0 ? 12 : hh % 12;
+                      const display = `${String(displayHour).padStart(2, '0')}:${String(mm).padStart(2, '0')} ${isPM ? 'PM' : 'AM'}`;
+                      return (
+                        <TouchableOpacity
+                          style={styles.timeRow}
+                          onPress={() => {
+                            setHora(display);
+                            setTimePickerVisible(false);
+                          }}
+                        >
+                          <Text style={styles.timeText}>{hourLabel}</Text>
+                        </TouchableOpacity>
+                      );
+                    }}
+                  />
+
+                  <Pressable style={styles.modalClose} onPress={() => setTimePickerVisible(false)}>
+                    <Text style={styles.modalCloseText}>Cerrar</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
           </View>
         </View>
 
@@ -121,13 +221,13 @@ export default function AdopcionFormScreen() {
           <Pressable style={styles.backButton} onPress={() => router.back()}>
             <Text style={styles.backButtonText}>Cancelar</Text>
           </Pressable>
-          
+
           <Pressable style={styles.confirmButton} onPress={handleConfirm}>
             <Text style={styles.confirmButtonText}>Confirmar</Text>
           </Pressable>
         </View>
 
-        <LedAlert 
+        <LedAlert
           visible={alertVisible}
           message={`Su cita ha sido realizada correctamente: ${fecha} a las ${hora}. \n\nLa asignación de cita NO garantiza la adopcion de la mascota.`}
           onClose={handleCloseAlert}
@@ -160,6 +260,20 @@ const styles = StyleSheet.create({
     borderColor: '#D8EBD2',
     fontSize: 16,
     color: '#233627',
+  },
+  inputText: {
+    fontSize: 16,
+    color: '#233627',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  lockButton: {
+    padding: 8,
+    marginLeft: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   calendarContainer: {
     backgroundColor: 'white',
@@ -205,5 +319,43 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '800',
     textTransform: 'uppercase',
-  }
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    maxHeight: '60%',
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 8,
+    color: '#1F6829',
+  },
+  timeRow: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  timeText: {
+    fontSize: 16,
+    color: '#233627',
+  },
+  modalClose: {
+    marginTop: 10,
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#F1F1F1',
+  },
+  modalCloseText: {
+    color: '#1F6829',
+    fontWeight: '700',
+  },
 });

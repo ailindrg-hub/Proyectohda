@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     marginHorizontal: AD_SLIDER_MARGIN_H,
     marginTop: 8,
-    marginBottom: 4,
+    marginBottom: 20,
     borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: '#FFF1E6',
