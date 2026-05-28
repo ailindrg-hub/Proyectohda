@@ -8,7 +8,13 @@ export function formatAuthError(message: string): string {
     return 'Este correo ya está registrado. Prueba iniciar sesión.';
   }
   if (m.includes('email not confirmed')) {
-    return 'Confirma tu correo antes de iniciar sesión (revisa tu bandeja de entrada).';
+    return 'Confirma tu correo con el código que te enviamos antes de iniciar sesión.';
+  }
+  if (m.includes('token has expired') || m.includes('otp_expired')) {
+    return 'El código expiró. Pulsa "Reenviar código" y usa el más reciente.';
+  }
+  if (m.includes('invalid otp') || m.includes('invalid token') || m.includes('otp')) {
+    return 'Código incorrecto. Revisa el correo e inténtalo de nuevo.';
   }
   if (m.includes('email_address_invalid') || m.includes('invalid email')) {
     return 'Correo no válido. Usa un correo real (por ejemplo @gmail.com, @outlook.com).';

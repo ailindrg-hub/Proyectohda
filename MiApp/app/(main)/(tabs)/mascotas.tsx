@@ -3,7 +3,9 @@ import { ScrollView, StyleSheet, Text, View, useWindowDimensions, Pressable } fr
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import GuestLoginPrompt from '@/components/GuestLoginPrompt';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
+import { useGuestGate } from '@/hooks/use-guest-gate';
 
 import conejo1 from '@/assets/images/mascotas/conejo1.jfif';
 import conejo2 from '@/assets/images/mascotas/conejo2.jfif';
@@ -132,6 +134,7 @@ const PETS = PETS_RAW.map((pet, index) => ({
 export default function MascotasScreen() {
   const { width } = useWindowDimensions();
   const router = useRouter();
+  const { isGuest, promptVisible, hideLoginPrompt, gateAction } = useGuestGate();
   const contentWidth = width - 24 * 2;
   const cardWidth = (contentWidth - CARD_GAP) / CARD_COLS;
 
@@ -162,19 +165,30 @@ export default function MascotasScreen() {
               </Text>
               <Text style={styles.petNote}>{pet.nota}</Text>
               
-              <Pressable 
-                style={styles.adoptButton}
-                onPress={() => router.push({
-                  pathname: '/(main)/adopcion-form',
-                  params: { nombreMascota: pet.nombre }
-                })}
+              <Pressable
+                style={[styles.adoptButton, isGuest && styles.adoptButtonLocked]}
+                onPress={() =>
+                  gateAction(() =>
+                    router.push({
+                      pathname: '/(main)/adopcion-form',
+                      params: { nombreMascota: pet.nombre },
+                    })
+                  )
+                }
               >
-                <Text style={styles.adoptButtonText}>AGENDAR ADOPCIÓN</Text>
+                {isGuest ? (
+                  <Ionicons name="lock-closed" size={14} color="#FFFFFF" style={styles.adoptLockIcon} />
+                ) : null}
+                <Text style={styles.adoptButtonText}>
+                  {isGuest ? 'INICIA SESIÓN' : 'AGENDAR ADOPCIÓN'}
+                </Text>
               </Pressable>
             </View>
           </View>
         ))}
       </View>
+
+      <GuestLoginPrompt visible={promptVisible} onCancel={hideLoginPrompt} />
     </ScrollView>
   );
 }
@@ -223,9 +237,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F6829',
     paddingVertical: 8,
     borderRadius: 8,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 'auto',
+    gap: 6,
+  },
+  adoptButtonLocked: {
+    backgroundColor: '#57A145',
+  },
+  adoptLockIcon: {
+    marginRight: 2,
   },
   adoptButtonText: {
     color: 'white',

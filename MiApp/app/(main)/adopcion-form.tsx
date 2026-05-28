@@ -17,7 +17,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Calendar } from 'react-native-calendars';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
+import GuestLoginPrompt from '@/components/GuestLoginPrompt';
+import LockButton from '@/components/LockButton';
 import { useSession } from '@/contexts/SessionContext';
+import { useGuestGate } from '@/hooks/use-guest-gate';
 
 const TIME_OPTIONS = Array.from({ length: 25 }, (_, i) => {
   const totalMinutes = 480 + i * 30;
@@ -31,7 +34,7 @@ export default function AdopcionFormScreen() {
   const router = useRouter();
 
   const { email: sessionEmail, name: sessionName, phone: sessionPhone } = useSession();
-  const isGuest = !sessionEmail;
+  const { isGuest, promptVisible, showLoginPrompt, hideLoginPrompt, gateAction } = useGuestGate();
 
   const [nombre, setNombre] = useState(sessionName || '');
   const [email, setEmail] = useState(sessionEmail || '');
@@ -97,9 +100,11 @@ export default function AdopcionFormScreen() {
                 onChangeText={setNombre}
                 placeholder="Tu nombre"
                 placeholderTextColor="#8DAF8B"
-                editable={isGuest}
+                editable={!isGuest}
               />
-              {!isGuest && (
+              {isGuest ? (
+                <LockButton onPress={showLoginPrompt} />
+              ) : (
                 <Pressable
                   style={styles.lockButton}
                   onPress={() => router.push('/(main)/profile' as Href)}
@@ -121,9 +126,11 @@ export default function AdopcionFormScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 placeholderTextColor="#8DAF8B"
-                editable={isGuest}
+                editable={!isGuest}
               />
-              {!isGuest && (
+              {isGuest ? (
+                <LockButton onPress={showLoginPrompt} />
+              ) : (
                 <Pressable
                   style={styles.lockButton}
                   onPress={() => router.push('/(main)/profile' as Href)}
@@ -144,9 +151,11 @@ export default function AdopcionFormScreen() {
                 placeholder="Tu número"
                 keyboardType="phone-pad"
                 placeholderTextColor="#8DAF8B"
-                editable={isGuest}
+                editable={!isGuest}
               />
-              {!isGuest && (
+              {isGuest ? (
+                <LockButton onPress={showLoginPrompt} />
+              ) : (
                 <Pressable
                   style={styles.lockButton}
                   onPress={() => router.push('/(main)/profile' as Href)}
@@ -159,29 +168,46 @@ export default function AdopcionFormScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Selecciona la fecha de visita</Text>
-            <View style={styles.calendarContainer}>
-              <Calendar
-                onDayPress={(day: { dateString: string }) => setFecha(day.dateString)}
-                markedDates={{
-                  [fecha]: { selected: true, selectedColor: '#1F6829' },
-                }}
-                theme={{
-                  todayTextColor: '#57A145',
-                  arrowColor: '#1F6829',
-                  selectedDayBackgroundColor: '#1F6829',
-                  calendarBackground: 'transparent',
-                }}
-              />
+            <View style={styles.calendarWrapper}>
+              <View style={[styles.calendarContainer, isGuest && styles.calendarLocked]}>
+                <Calendar
+                  onDayPress={(day: { dateString: string }) => {
+                    if (!isGuest) {
+                      setFecha(day.dateString);
+                    }
+                  }}
+                  markedDates={{
+                    [fecha]: { selected: true, selectedColor: '#1F6829' },
+                  }}
+                  theme={{
+                    todayTextColor: '#57A145',
+                    arrowColor: '#1F6829',
+                    selectedDayBackgroundColor: '#1F6829',
+                    calendarBackground: 'transparent',
+                  }}
+                />
+              </View>
+              {isGuest ? (
+                <Pressable style={styles.calendarLockOverlay} onPress={showLoginPrompt}>
+                  <Ionicons name="lock-closed" size={40} color="#1F6829" />
+                </Pressable>
+              ) : null}
             </View>
           </View>
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Seleccionar hora</Text>
-            <Pressable style={styles.input} onPress={() => setTimePickerVisible(true)}>
-              <Text style={[styles.inputText, !hora && { color: '#8DAF8B' }]}>
-                {hora || 'Seleccionar hora'}
-              </Text>
-            </Pressable>
+            <View style={styles.inputRow}>
+              <Pressable
+                style={[styles.input, { flex: 1 }]}
+                onPress={() => gateAction(() => setTimePickerVisible(true))}
+              >
+                <Text style={[styles.inputText, !hora && { color: '#8DAF8B' }]}>
+                  {hora || 'Seleccionar hora'}
+                </Text>
+              </Pressable>
+              {isGuest ? <LockButton onPress={showLoginPrompt} /> : null}
+            </View>
 
             <Modal
               visible={timePickerVisible}
@@ -239,10 +265,18 @@ export default function AdopcionFormScreen() {
             <Text style={styles.backButtonText}>Cancelar</Text>
           </Pressable>
 
-          <Pressable style={styles.confirmButton} onPress={handleConfirm}>
-            <Text style={styles.confirmButtonText}>Confirmar</Text>
+          <Pressable
+            style={[styles.confirmButton, isGuest && styles.confirmButtonLocked]}
+            onPress={() => gateAction(handleConfirm)}
+          >
+            {isGuest ? <Ionicons name="lock-closed" size={20} color="#FFFFFF" /> : null}
+            <Text style={styles.confirmButtonText}>
+              {isGuest ? 'Inicia sesión' : 'Confirmar'}
+            </Text>
           </Pressable>
         </View>
+
+        <GuestLoginPrompt visible={promptVisible} onCancel={hideLoginPrompt} />
 
         <LedAlert
           visible={alertVisible}
@@ -292,12 +326,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  calendarWrapper: {
+    position: 'relative',
+  },
   calendarContainer: {
     backgroundColor: 'white',
     borderRadius: 16,
     padding: 10,
     borderWidth: 1,
     borderColor: '#D8EBD2',
+  },
+  calendarLocked: {
+    opacity: 0.45,
+  },
+  calendarLockOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 254, 245, 0.7)',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -320,6 +367,8 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     flex: 2,
+    flexDirection: 'row',
+    gap: 8,
     backgroundColor: '#1F6829',
     height: 56,
     borderRadius: 18,
@@ -330,6 +379,9 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 5,
+  },
+  confirmButtonLocked: {
+    backgroundColor: '#57A145',
   },
   confirmButtonText: {
     color: 'white',

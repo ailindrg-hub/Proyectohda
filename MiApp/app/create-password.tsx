@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
-import { isValidEmail } from '@/lib/validation';
+import { getEmailValidationError } from '@/lib/validation';
 import { getSupabase, SUPABASE_SETUP_MESSAGE } from '@/lib/supabase';
 import { formatAuthError } from '@/lib/auth-errors';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
@@ -48,8 +48,9 @@ export default function CreatePasswordScreen() {
       return;
     }
     const email = String(contacto).trim();
-    if (!isValidEmail(email)) {
-      alert('El correo proporcionado no es válido. Vuelve y corrígelo.');
+    const emailError = getEmailValidationError(email);
+    if (emailError) {
+      alert(emailError);
       return;
     }
     if (!password.trim()) {

@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View, Pressable, Image } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import GuestLoginPrompt from '@/components/GuestLoginPrompt';
+import LockButton from '@/components/LockButton';
 import { useSession } from '@/contexts/SessionContext';
+import { useGuestGate } from '@/hooks/use-guest-gate';
 import { getSupabase } from '@/lib/supabase';
 import { updateProfile } from '@/lib/profile';
 import { isValidEmail } from '@/lib/validation';
@@ -11,7 +14,7 @@ import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 export default function ProfileScreen() {
   const router = useRouter();
   const { email, name, phone, profileImage, setName, setPhone, setProfileImage, setEmail } = useSession();
-  const isGuest = !email || email === 'Invitado';
+  const { isGuest, promptVisible, showLoginPrompt, hideLoginPrompt } = useGuestGate();
 
   const leaveProfile = () => {
     if (router.canGoBack()) {
@@ -42,6 +45,10 @@ export default function ProfileScreen() {
   }, [profileImage]);
 
   const pickImage = async () => {
+    if (isGuest) {
+      showLoginPrompt();
+      return;
+    }
     try {
       const ImagePicker = await import('expo-image-picker');
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -67,6 +74,10 @@ export default function ProfileScreen() {
   };
 
   const handleSave = async () => {
+    if (isGuest) {
+      showLoginPrompt();
+      return;
+    }
     const trimmedName = localName.trim();
     const trimmedEmail = localEmail.trim();
     const phoneDigits = localPhone.replace(/\D/g, '');
@@ -89,17 +100,6 @@ export default function ProfileScreen() {
 
     if (phoneDigits.length > 0 && phoneDigits.length !== 10) {
       alert('El teléfono debe tener exactamente 10 dígitos.');
-      return;
-    }
-
-    if (isGuest) {
-      setName(trimmedName);
-      setPhone(phoneDigits);
-      setProfileImage(localProfileImage);
-      if (trimmedEmail && isValidEmail(trimmedEmail)) {
-        setEmail(trimmedEmail);
-      }
-      leaveProfile();
       return;
     }
 
@@ -176,51 +176,79 @@ export default function ProfileScreen() {
             </View>
           )}
           <Pressable style={styles.editPictureButton} onPress={pickImage}>
-            <Ionicons name="camera-outline" size={20} color="#FFFFFF" />
+            <Ionicons
+              name={isGuest ? 'lock-closed' : 'camera-outline'}
+              size={20}
+              color="#FFFFFF"
+            />
           </Pressable>
         </View>
       </View>
 
       <View style={styles.inputSection}>
         <Text style={styles.label}>Nombre</Text>
-        <TextInput
-          value={localName}
-          onChangeText={setLocalName}
-          placeholder="Ingresa tu nombre"
-          placeholderTextColor="#8DAF8B"
-          style={styles.input}
-        />
+        <View style={styles.inputRow}>
+          <TextInput
+            value={localName}
+            onChangeText={setLocalName}
+            placeholder="Ingresa tu nombre"
+            placeholderTextColor="#8DAF8B"
+            style={[styles.input, { flex: 1 }]}
+            editable={!isGuest}
+          />
+          {isGuest ? <LockButton onPress={showLoginPrompt} /> : null}
+        </View>
       </View>
 
       <View style={styles.inputSection}>
         <Text style={styles.label}>Correo electrónico</Text>
-        <TextInput
-          value={localEmail}
-          onChangeText={setLocalEmail}
-          placeholder="ejemplo@correo.com"
-          placeholderTextColor="#8DAF8B"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          style={styles.input}
-        />
+        <View style={styles.inputRow}>
+          <TextInput
+            value={localEmail}
+            onChangeText={setLocalEmail}
+            placeholder="ejemplo@correo.com"
+            placeholderTextColor="#8DAF8B"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            style={[styles.input, { flex: 1 }]}
+            editable={!isGuest}
+          />
+          {isGuest ? <LockButton onPress={showLoginPrompt} /> : null}
+        </View>
       </View>
 
       <View style={styles.inputSection}>
         <Text style={styles.label}>Teléfono</Text>
-        <TextInput
-          value={localPhone}
-          onChangeText={(text) => setLocalPhone(text.replace(/\D/g, ''))}
-          placeholder="6000000000"
-          placeholderTextColor="#8DAF8B"
-          keyboardType="phone-pad"
-          style={styles.input}
-          maxLength={10}
-        />
+        <View style={styles.inputRow}>
+          <TextInput
+            value={localPhone}
+            onChangeText={(text) => setLocalPhone(text.replace(/\D/g, ''))}
+            placeholder="6000000000"
+            placeholderTextColor="#8DAF8B"
+            keyboardType="phone-pad"
+            style={[styles.input, { flex: 1 }]}
+            maxLength={10}
+            editable={!isGuest}
+          />
+          {isGuest ? <LockButton onPress={showLoginPrompt} /> : null}
+        </View>
       </View>
 
-      <Pressable style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Guardar cambios</Text>
+      <Pressable
+        style={[styles.saveButton, isGuest && styles.saveButtonLocked]}
+        onPress={handleSave}
+      >
+        {isGuest ? (
+          <>
+            <Ionicons name="lock-closed" size={20} color="#FFFFFF" style={styles.saveButtonIcon} />
+            <Text style={styles.saveButtonText}>Inicia sesión para guardar</Text>
+          </>
+        ) : (
+          <Text style={styles.saveButtonText}>Guardar cambios</Text>
+        )}
       </Pressable>
+
+      <GuestLoginPrompt visible={promptVisible} onCancel={hideLoginPrompt} />
     </ScrollView>
   );
 }
@@ -281,6 +309,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 5,
   },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
   inputSection: {
     marginTop: 18,
     backgroundColor: '#FFFFFF',
@@ -311,6 +344,14 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  saveButtonLocked: {
+    backgroundColor: '#57A145',
+  },
+  saveButtonIcon: {
+    marginRight: 4,
   },
   saveButtonText: {
     color: '#FFFFFF',

@@ -17,6 +17,7 @@ import { useSession } from '@/contexts/SessionContext';
 import { isValidEmail } from '@/lib/validation';
 import { getSupabase, SUPABASE_SETUP_MESSAGE } from '@/lib/supabase';
 import { formatAuthError } from '@/lib/auth-errors';
+import { isEmailNotConfirmedError } from '@/lib/email-verification';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
 
 export default function HomeScreen() {
@@ -73,7 +74,14 @@ export default function HomeScreen() {
     setLoading(false);
 
     if (error) {
-      showBanner(formatAuthError(error.message));
+      const msg = formatAuthError(error.message);
+      showBanner(msg);
+      if (isEmailNotConfirmedError(error.message)) {
+        router.push({
+          pathname: '/confirm-identity',
+          params: { contacto: e },
+        } as Href);
+      }
       return;
     }
 

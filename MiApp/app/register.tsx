@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
-import { isValidEmail, looksLikeEmail, isPhoneNumber } from '@/lib/validation';
+import { getEmailValidationError, looksLikeEmail, isPhoneNumber } from '@/lib/validation';
 
 export default function RegisterScreen() {
   const [nombre, setNombre] = useState('');
@@ -136,8 +136,9 @@ export default function RegisterScreen() {
                     }
                     return;
                   }
-                  if (!isValidEmail(c)) {
-                    showBanner('Ingresa un correo válido (ej: usuario@dominio.com)');
+                  const emailError = getEmailValidationError(c);
+                  if (emailError) {
+                    showBanner(emailError);
                     return;
                   }
                   router.push({

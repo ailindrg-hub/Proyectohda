@@ -4,7 +4,10 @@ import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
+import GuestLoginPrompt from '@/components/GuestLoginPrompt';
+import LockButton from '@/components/LockButton';
 import { useSession } from '@/contexts/SessionContext';
+import { useGuestGate } from '@/hooks/use-guest-gate';
 
 const TIME_OPTIONS = Array.from({ length: 25 }, (_, i) => {
   const totalMinutes = 480 + i * 30;
@@ -18,8 +21,8 @@ export default function CitaFormScreen() {
   const router = useRouter();
   
   const { email: sessionEmail } = useSession();
+  const { isGuest, promptVisible, showLoginPrompt, hideLoginPrompt, gateAction } = useGuestGate();
   const [email, setEmail] = useState(sessionEmail || '');
-  const isGuest = !sessionEmail;
   const [timeQuery, setTimeQuery] = useState('');
 
   useEffect(() => {
@@ -75,9 +78,11 @@ export default function CitaFormScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 placeholderTextColor="#8DAF8B"
-                editable={isGuest}
+                editable={!isGuest}
               />
-              {!isGuest && (
+              {isGuest ? (
+                <LockButton onPress={showLoginPrompt} />
+              ) : (
                 <Pressable
                   style={styles.lockButton}
                   onPress={() => router.push('/(main)/profile' as Href)}
@@ -90,9 +95,17 @@ export default function CitaFormScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Seleccionar hora</Text>
-            <Pressable style={styles.input} onPress={() => setTimePickerVisible(true)}>
-              <Text style={[styles.inputText, !hora && { color: '#8DAF8B' }]}>{hora || 'Seleccionar hora'}</Text>
-            </Pressable>
+            <View style={styles.inputRow}>
+              <Pressable
+                style={[styles.input, { flex: 1 }]}
+                onPress={() => gateAction(() => setTimePickerVisible(true))}
+              >
+                <Text style={[styles.inputText, !hora && { color: '#8DAF8B' }]}>
+                  {hora || 'Seleccionar hora'}
+                </Text>
+              </Pressable>
+              {isGuest ? <LockButton onPress={showLoginPrompt} /> : null}
+            </View>
 
             <Modal
               visible={timePickerVisible}
@@ -150,10 +163,18 @@ export default function CitaFormScreen() {
             <Text style={styles.backButtonText}>Volver</Text>
           </Pressable>
           
-          <Pressable style={styles.confirmButton} onPress={handleConfirm}>
-            <Text style={styles.confirmButtonText}>Confirmar</Text>
+          <Pressable
+            style={[styles.confirmButton, isGuest && styles.confirmButtonLocked]}
+            onPress={() => gateAction(handleConfirm)}
+          >
+            {isGuest ? <Ionicons name="lock-closed" size={20} color="#FFFFFF" /> : null}
+            <Text style={styles.confirmButtonText}>
+              {isGuest ? 'Inicia sesión' : 'Confirmar'}
+            </Text>
           </Pressable>
         </View>
+
+        <GuestLoginPrompt visible={promptVisible} onCancel={hideLoginPrompt} />
 
         <LedAlert 
           visible={alertVisible}
@@ -214,6 +235,8 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     flex: 2,
+    flexDirection: 'row',
+    gap: 8,
     backgroundColor: '#1F6829',
     height: 56,
     borderRadius: 18,
@@ -224,6 +247,9 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
     elevation: 5,
+  },
+  confirmButtonLocked: {
+    backgroundColor: '#57A145',
   },
   confirmButtonText: {
     color: 'white',
