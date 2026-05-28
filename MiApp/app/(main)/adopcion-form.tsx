@@ -14,10 +14,17 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Calendar } from 'react-native-calendars/src';
+import { Calendar } from 'react-native-calendars';
 import { refugioScreenStyles } from '@/constants/refugioScreenStyles';
 import LedAlert from '@/components/LedAlert';
 import { useSession } from '@/contexts/SessionContext';
+
+const TIME_OPTIONS = Array.from({ length: 25 }, (_, i) => {
+  const totalMinutes = 480 + i * 30;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+});
 
 export default function AdopcionFormScreen() {
   const { nombreMascota } = useLocalSearchParams<{ nombreMascota: string }>();
@@ -31,6 +38,7 @@ export default function AdopcionFormScreen() {
   const [telefono, setTelefono] = useState(sessionPhone || '');
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
+  const [timeQuery, setTimeQuery] = useState('');
   const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
 
@@ -184,31 +192,40 @@ export default function AdopcionFormScreen() {
               <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
                   <Text style={styles.modalTitle}>Selecciona una hora</Text>
+                  <TextInput
+                    value={timeQuery}
+                    onChangeText={setTimeQuery}
+                    placeholder="Buscar hora, por ejemplo 08:30"
+                    placeholderTextColor="#8DAF8B"
+                    style={styles.searchInput}
+                    keyboardType="numeric"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
                   <FlatList
-                    data={Array.from({ length: 25 }, (_, i) => 480 + i * 30)}
-                    keyExtractor={(mins) => String(mins)}
-                    renderItem={({ item }) => {
-                      const hh = Math.floor(item / 60);
-                      const mm = item % 60;
-                      const hourLabel = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
-                      const isPM = hh >= 12;
-                      const displayHour = hh % 12 === 0 ? 12 : hh % 12;
-                      const display = `${String(displayHour).padStart(2, '0')}:${String(mm).padStart(2, '0')} ${isPM ? 'PM' : 'AM'}`;
-                      return (
-                        <TouchableOpacity
-                          style={styles.timeRow}
-                          onPress={() => {
-                            setHora(display);
-                            setTimePickerVisible(false);
-                          }}
-                        >
-                          <Text style={styles.timeText}>{hourLabel}</Text>
-                        </TouchableOpacity>
-                      );
-                    }}
+                    data={TIME_OPTIONS.filter((time) => time.includes(timeQuery))}
+                    keyExtractor={(time) => time}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.timeRow}
+                        onPress={() => {
+                          setHora(item);
+                          setTimePickerVisible(false);
+                          setTimeQuery('');
+                        }}
+                      >
+                        <Text style={styles.timeText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
                   />
 
-                  <Pressable style={styles.modalClose} onPress={() => setTimePickerVisible(false)}>
+                  <Pressable
+                    style={styles.modalClose}
+                    onPress={() => {
+                      setTimePickerVisible(false);
+                      setTimeQuery('');
+                    }}
+                  >
                     <Text style={styles.modalCloseText}>Cerrar</Text>
                   </Pressable>
                 </View>
@@ -337,6 +354,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 8,
     color: '#1F6829',
+  },
+  searchInput: {
+    backgroundColor: '#F8FFF7',
+    borderColor: '#D8EBD2',
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 12,
+    color: '#233627',
+    fontSize: 16,
   },
   timeRow: {
     paddingVertical: 12,

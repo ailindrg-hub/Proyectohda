@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
+import { getSupabase } from '@/lib/supabase';
 
 function HamburgerMenuIcon() {
   return (
@@ -30,7 +31,7 @@ const hamburgerStyles = StyleSheet.create({
 
 export default function MainHeader() {
   const router = useRouter();
-  const { name, clearSession } = useSession();
+  const { name, clearSession, clearRegistrationFlow } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const displayName = (name ?? '').trim().length > 0 ? (name ?? '').trim() : 'Usuario';
 
@@ -64,9 +65,16 @@ export default function MainHeader() {
     router.push('/(main)/profile' as Href);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setMenuOpen(false);
+    try {
+      const supabase = getSupabase();
+      await supabase.auth.signOut();
+    } catch {
+      // Even if sign out fails, continue clearing local session state.
+    }
     clearSession();
+    clearRegistrationFlow();
     router.replace('/(tabs)' as Href);
   };
 

@@ -24,6 +24,7 @@ type SessionContextValue = {
   setVerificationCode: (value: string) => void;
   clearSession: () => void;
   clearRegistrationFlow: () => void;
+  signOut: () => Promise<void>;
 };
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -121,6 +122,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setPendingRegistrationState(null);
     setVerificationCodeState('');
   }, []);
+  const signOut = useCallback(async () => {
+    const supabase = getSupabase();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Ignore sign-out failure; ensure local session state is cleared.
+    }
+    clearSession();
+    clearRegistrationFlow();
+  }, [clearRegistrationFlow, clearSession]);
 
   const value = useMemo(
     () => ({
@@ -138,6 +149,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setVerificationCode,
       clearSession,
       clearRegistrationFlow,
+      signOut,
     }),
     [
       email,
@@ -154,6 +166,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setVerificationCode,
       clearSession,
       clearRegistrationFlow,
+      signOut,
     ]
   );
 
