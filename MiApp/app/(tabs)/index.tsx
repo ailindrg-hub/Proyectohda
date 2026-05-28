@@ -78,7 +78,7 @@ export default function HomeScreen() {
       showBanner(msg);
       if (isEmailNotConfirmedError(error.message)) {
         router.push({
-          pathname: '/confirm-identity',
+          pathname: '/verificacion-cuenta',
           params: { contacto: e },
         } as Href);
       }

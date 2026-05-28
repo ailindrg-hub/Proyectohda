@@ -101,18 +101,13 @@ export default function CreatePasswordScreen() {
       return;
     }
 
-    if (data?.session) {
-      const savedName = [nombre, apellido]
-        .map((value) => String(value ?? '').trim())
-        .filter(Boolean)
-        .join(' ');
-      saveSessionEmail(email);
-      saveSessionName(savedName);
-      saveSessionPhone('');
-
-      router.replace('/(main)' as Href);
-      return;
-    }
+    const savedName = [nombre, apellido]
+      .map((value) => String(value ?? '').trim())
+      .filter(Boolean)
+      .join(' ');
+    saveSessionEmail(email);
+    saveSessionName(savedName);
+    saveSessionPhone('');
 
     setPendingRegistration({
       contact: email,
@@ -122,7 +117,7 @@ export default function CreatePasswordScreen() {
     });
 
     router.push({
-      pathname: '/confirm-identity',
+      pathname: '/verificacion-cuenta',
       params: { contacto: email },
     } as Href);
   }
@@ -246,7 +241,7 @@ export default function CreatePasswordScreen() {
                 {loading ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={[styles.buttonText, styles.rightButtonText]}>Registrarse</Text>
+                  <Text style={[styles.buttonText, styles.rightButtonText]}>Iniciar</Text>
                 )}
               </Pressable>
             </View>
