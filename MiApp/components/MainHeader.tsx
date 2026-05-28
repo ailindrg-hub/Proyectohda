@@ -34,6 +34,31 @@ export default function MainHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const displayName = (name ?? '').trim().length > 0 ? (name ?? '').trim() : 'Usuario';
 
+  const goHome = () => {
+    setMenuOpen(false);
+    router.push('/(main)/(tabs)' as Href);
+  };
+
+  const goMascotas = () => {
+    setMenuOpen(false);
+    router.push('/(main)/(tabs)/mascotas' as Href);
+  };
+
+  const goDonar = () => {
+    setMenuOpen(false);
+    router.push('/(main)/(tabs)/donar' as Href);
+  };
+
+  const goVoluntarios = () => {
+    setMenuOpen(false);
+    router.push('/(main)/(tabs)/voluntarios' as Href);
+  };
+
+  const goCitas = () => {
+    setMenuOpen(false);
+    router.push('/(main)/(tabs)/info' as Href);
+  };
+
   const openProfile = () => {
     setMenuOpen(false);
     router.push('/(main)/profile' as Href);
@@ -79,6 +104,31 @@ export default function MainHeader() {
           />
           <View style={styles.menuAnchor}>
             <View style={styles.menuCard}>
+              <Pressable style={styles.menuItem} onPress={goHome}>
+                <Ionicons name="home-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Inicio</Text>
+              </Pressable>
+
+              <Pressable style={styles.menuItem} onPress={goMascotas}>
+                <Ionicons name="paw-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Mascotas</Text>
+              </Pressable>
+
+              <Pressable style={styles.menuItem} onPress={goDonar}>
+                <Ionicons name="calendar-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Eventos</Text>
+              </Pressable>
+
+              <Pressable style={styles.menuItem} onPress={goVoluntarios}>
+                <Ionicons name="bag-handle-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Ventas</Text>
+              </Pressable>
+
+              <Pressable style={styles.menuItem} onPress={goCitas}>
+                <Ionicons name="mail-outline" size={22} color="#1F6829" />
+                <Text style={styles.menuItemText}>Citas</Text>
+              </Pressable>
+
               <Pressable style={styles.menuItem} onPress={openProfile}>
                 <Ionicons name="person-outline" size={22} color="#1F6829" />
                 <Text style={styles.menuItemText}>Perfil</Text>
