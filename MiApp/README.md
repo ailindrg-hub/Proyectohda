@@ -2,6 +2,15 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## Supabase
+
+1. Crea un proyecto en [Supabase](https://supabase.com) y copia **Project URL** y la clave **anon public** (Project Settings → API).
+2. Copia `.env.example` a `.env` en la raíz de `MiApp` y rellena `EXPO_PUBLIC_SUPABASE_URL` y `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
+3. Para pruebas rápidas, en Supabase puedes desactivar la confirmación por correo en **Authentication → Providers → Email**.
+4. Arranca con caché limpia para cargar variables: `npx expo start -c`.
+
+La pantalla **Inicio de sesión** (`app/(tabs)/index.tsx`) usa **Crear cuenta** y **Siguiente** (iniciar sesión). Con sesión activa la app redirige a **Explore**, donde puedes **Cerrar sesión**.
+
 ## Get started
 
 1. Install dependencies

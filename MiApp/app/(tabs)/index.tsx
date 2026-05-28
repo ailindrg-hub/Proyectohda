@@ -1,9 +1,19 @@
+<<<<<<< Updated upstream
 import { useState, useRef, useEffect } from 'react';
 import {
+=======
+﻿import { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  SafeAreaView,
+>>>>>>> Stashed changes
   StyleSheet,
   Text,
   TextInput,
   View,
+<<<<<<< Updated upstream
   Pressable,
   ScrollView,
   KeyboardAvoidingView,
@@ -12,6 +22,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, type Href } from 'expo-router';
+=======
+} from 'react-native';
+>>>>>>> Stashed changes
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '@/contexts/SessionContext';
 import { isValidEmail } from '@/lib/validation';
@@ -19,9 +32,12 @@ import { getSupabase, SUPABASE_SETUP_MESSAGE } from '@/lib/supabase';
 import { formatAuthError } from '@/lib/auth-errors';
 import RefugioScreenShell from '@/components/RefugioScreenShell';
 
+import { useAuth } from '@/hooks/use-auth';
+
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+<<<<<<< Updated upstream
   const [banner, setBanner] = useState('');
   const [loading, setLoading] = useState(false);
   const bannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -185,6 +201,106 @@ export default function HomeScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
       </RefugioScreenShell>
+=======
+  const [busySignUp, setBusySignUp] = useState(false);
+  const [busySignIn, setBusySignIn] = useState(false);
+  const { signIn, signUp } = useAuth();
+  const busy = busySignUp || busySignIn;
+
+  const onSignUp = async () => {
+    if (!email.trim() || !password) {
+      Alert.alert('Datos incompletos', 'Introduce correo y contraseña.');
+      return;
+    }
+    setBusySignUp(true);
+    const { error } = await signUp(email, password);
+    setBusySignUp(false);
+    if (error) {
+      Alert.alert('Error al crear cuenta', error.message);
+      return;
+    }
+    Alert.alert(
+      'Cuenta creada',
+      'Si tu proyecto exige confirmar el correo, revisa tu bandeja de entrada antes de iniciar sesión.'
+    );
+  };
+
+  const onSignIn = async () => {
+    if (!email.trim() || !password) {
+      Alert.alert('Datos incompletos', 'Introduce correo y contraseña.');
+      return;
+    }
+    setBusySignIn(true);
+    const { error } = await signIn(email, password);
+    setBusySignIn(false);
+    if (error) {
+      Alert.alert('Error al iniciar sesión', error.message);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.decorationLayer} pointerEvents="none">
+        <View style={styles.greenBubble} />
+        <View style={styles.yellowGlow} />
+        <View style={styles.softAccent} />
+      </View>
+
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="person" size={72} color="#266B2E" />
+          </View>
+          <Text style={styles.title}>Inicio de sesión</Text>
+        </View>
+
+        <View style={styles.form}>
+          <Text style={styles.label}>Correo electrónico</Text>
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholder="correo@ejemplo.com"
+            placeholderTextColor="#8DAF8B"
+            style={styles.input}
+          />
+
+          <Text style={styles.label}>Contraseña</Text>
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="********"
+            placeholderTextColor="#8DAF8B"
+            style={styles.input}
+          />
+        </View>
+
+        <View style={styles.actionsRow}>
+          <Pressable
+            style={[styles.button, styles.leftButton, busy && styles.buttonDisabled]}
+            onPress={onSignUp}
+            disabled={busy}>
+            {busySignUp ? (
+              <ActivityIndicator color="#57A145" />
+            ) : (
+              <Text style={[styles.buttonText, styles.leftButtonText]}>Crear cuenta</Text>
+            )}
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.rightButton, busy && styles.buttonDisabled]}
+            onPress={onSignIn}
+            disabled={busy}>
+            {busySignIn ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <Text style={[styles.buttonText, styles.rightButtonText]}>Siguiente</Text>
+            )}
+          </Pressable>
+        </View>
+      </View>
+>>>>>>> Stashed changes
     </SafeAreaView>
   );
 }
@@ -300,6 +416,7 @@ const styles = StyleSheet.create({
   rightButtonText: {
     color: '#FFFFFF',
   },
+<<<<<<< Updated upstream
   guestButton: {
     marginTop: 24,
     alignItems: 'center',
@@ -310,5 +427,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     textDecorationLine: 'underline',
+=======
+  buttonDisabled: {
+    opacity: 0.65,
+>>>>>>> Stashed changes
   },
 });
